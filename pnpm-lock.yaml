@@ -17,6 +17,9 @@ importers:
 
   apps/www:
     dependencies:
+      '@celo/blind-threshold-bls':
+        specifier: 1.0.0-beta
+        version: 1.0.0-beta
       '@radix-ui/react-dialog':
         specifier: ^1.0.5
         version: 1.0.5(@types/react-dom@18.3.0)(@types/react@18.3.1)(react-dom@19.0.0-rc-935180c7e0-20240524)(react@19.0.0-rc-935180c7e0-20240524)
@@ -2009,6 +2012,10 @@ packages:
       '@babel/helper-string-parser': 7.24.6
       '@babel/helper-validator-identifier': 7.24.6
       to-fast-properties: 2.0.0
+    dev: false
+
+  /@celo/blind-threshold-bls@1.0.0-beta:
+    resolution: {integrity: sha512-sk9XLvbv0M0TJKJPHPc8FkIRTfP/PiPHeyKXPBTMZBW8URL4pRix9IfcT98zT5sA7hvMDJwgw3p3tM/L6Z1iGw==}
     dev: false
 
   /@coinbase/wallet-sdk@3.9.1:
