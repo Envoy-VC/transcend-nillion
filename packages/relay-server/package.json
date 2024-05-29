@@ -1,0 +1,28 @@
+{
+  "name": "relay-server",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "scripts": {
+    "relay": "node --loader ts-node/esm ./src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@chainsafe/libp2p-noise": "^15.0.0",
+    "@chainsafe/libp2p-yamux": "^6.0.2",
+    "@libp2p/circuit-relay-v2": "^1.0.24",
+    "@libp2p/identify": "^2.0.2",
+    "@libp2p/mplex": "^10.0.24",
+    "@libp2p/websockets": "^8.0.24",
+    "@types/node": "^20.11.20",
+    "filters": "link:@libp2p/websockets/filters",
+    "libp2p": "^1.6.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.2"
+  },
+  "devDependencies": {
+    "@vercel/style-guide": "^5.2.0"
+  }
+}
