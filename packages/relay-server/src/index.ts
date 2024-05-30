@@ -6,6 +6,7 @@ import { mplex } from '@libp2p/mplex';
 import { webSockets } from '@libp2p/websockets';
 import * as filters from '@libp2p/websockets/filters';
 import { createLibp2p } from 'libp2p';
+import { webTransport } from '@libp2p/webtransport';
 
 const server = await createLibp2p({
   addresses: {
@@ -15,6 +16,7 @@ const server = await createLibp2p({
     webSockets({
       filter: filters.all,
     }),
+    webTransport(),
   ],
   connectionEncryption: [noise()],
   streamMuxers: [yamux(), mplex()],
