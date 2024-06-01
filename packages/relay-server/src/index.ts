@@ -7,10 +7,16 @@ import { mplex } from '@libp2p/mplex';
 import { webSockets } from '@libp2p/websockets';
 import * as filters from '@libp2p/websockets/filters';
 import { gossipsub } from '@chainsafe/libp2p-gossipsub';
-import { createLibp2p, Libp2pOptions } from 'libp2p';
+import type { Libp2pOptions } from 'libp2p';
+import { createLibp2p } from 'libp2p';
 import { pubsubPeerDiscovery } from '@libp2p/pubsub-peer-discovery';
+import type { Libp2p, PeerId } from '@libp2p/interface';
+import { createEd25519PeerId } from '@libp2p/peer-id-factory';
 
-const createNode = async (bootstraps: string[]) => {
+const createNode = async (
+  peerId: PeerId,
+  bootstraps: string[]
+): Promise<Libp2p> => {
   const config: Libp2pOptions = {
     addresses: {
       listen: ['/ip4/127.0.0.1/tcp/0/ws'],
@@ -20,6 +26,7 @@ const createNode = async (bootstraps: string[]) => {
         filter: filters.all,
       }),
     ],
+    peerId,
     connectionEncryption: [noise()],
     streamMuxers: [yamux(), mplex()],
     peerDiscovery: [
@@ -50,19 +57,30 @@ const createNode = async (bootstraps: string[]) => {
   return node;
 };
 
-const relay = await createNode([]);
-console.log(`Relay started with id: ${relay.peerId.toString()}\n`);
+const relayPeerID = await createEd25519PeerId();
+const node1PeerID = await createEd25519PeerId();
+const node2PeerID = await createEd25519PeerId();
+relayPeerID.toCID();
+
+console.log(`
+Relay Peer ID: ${relayPeerID.toString()}
+Node 1 Peer ID: ${node1PeerID.toString()}
+Node 2 Peer ID: ${node2PeerID.toString()}
+`);
+
+const relay = await createNode(relayPeerID, []);
+console.log(`Relay started...\n`);
 
 const relayMultiaddr = relay.getMultiaddrs().map((m) => m.toString());
 
 const [node1, node2] = await Promise.all([
-  createNode(relayMultiaddr),
-  createNode(relayMultiaddr),
+  createNode(node1PeerID, relayMultiaddr),
+  createNode(node2PeerID, relayMultiaddr),
 ]);
 
 console.log(`
-Node 1 started with id: ${node1.peerId.toString()}
-Node 2 started with id: ${node2.peerId.toString()}
+Node 1 started...}
+Node 2 started...}
 \n`);
 
 const nodes = {
@@ -76,7 +94,7 @@ node1.addEventListener('peer:discovery', (e) => {
   console.log(`Node 1 discovered: ${nodes[peer.id.toString()]}`);
   const multiAddr = peer.multiaddrs;
   if (multiAddr.length > 0) {
-    node1.dial(multiAddr);
+    node1.dial(multiAddr).catch(console.log);
   }
 });
 
@@ -85,7 +103,7 @@ node2.addEventListener('peer:discovery', (e) => {
   console.log(`Node 2 discovered: ${nodes[peer.id.toString()]}`);
   const multiAddr = peer.multiaddrs;
   if (multiAddr.length > 0) {
-    node2.dial(multiAddr);
+    node2.dial(multiAddr).catch(console.log);
   }
 });
 

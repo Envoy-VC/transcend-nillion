@@ -16,4 +16,7 @@ module.exports = {
   settings: {
     'import/resolver': { typescript: { project } },
   },
+  rules: {
+    'no-console': 'off',
+  },
 };
