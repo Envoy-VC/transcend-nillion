@@ -39,9 +39,6 @@ const createNode = async (bootstraps: string[]) => {
         },
       }),
     },
-    connectionManager: {
-      minConnections: 0,
-    },
   } as const;
 
   if (bootstraps.length > 0) {
@@ -49,6 +46,7 @@ const createNode = async (bootstraps: string[]) => {
   }
 
   const node = await createLibp2p(config);
+  await node.start();
   return node;
 };
 
@@ -67,12 +65,36 @@ Node 1 started with id: ${node1.peerId.toString()}
 Node 2 started with id: ${node2.peerId.toString()}
 \n`);
 
+const nodes = {
+  [node1.peerId.toString()]: 'Node 1',
+  [node2.peerId.toString()]: 'Node 2',
+  [relay.peerId.toString()]: 'Relay',
+};
+
 node1.addEventListener('peer:discovery', (e) => {
   const peer = e.detail;
-  console.log(`Node 1 discovered: ${peer.id.toString()}`);
+  console.log(`Node 1 discovered: ${nodes[peer.id.toString()]}`);
+  const multiAddr = peer.multiaddrs;
+  if (multiAddr.length > 0) {
+    node1.dial(multiAddr);
+  }
 });
 
 node2.addEventListener('peer:discovery', (e) => {
   const peer = e.detail;
-  console.log(`Node 2 discovered: ${peer.id.toString()}`);
+  console.log(`Node 2 discovered: ${nodes[peer.id.toString()]}`);
+  const multiAddr = peer.multiaddrs;
+  if (multiAddr.length > 0) {
+    node2.dial(multiAddr);
+  }
+});
+
+node1.addEventListener('peer:connect', (e) => {
+  const peer = e.detail;
+  console.log(`Node 1 connected to: ${nodes[peer.toString()]}`);
+});
+
+node2.addEventListener('peer:connect', (e) => {
+  const peer = e.detail;
+  console.log(`Node 2 connected to: ${nodes[peer.toString()]}`);
 });
