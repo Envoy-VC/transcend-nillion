@@ -1,4 +1,6 @@
-import React from 'react';
+'use client';
+
+import React, { PropsWithChildren } from 'react';
 
 import { Navbar } from '~/components';
 
