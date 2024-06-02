@@ -2,12 +2,18 @@
 
 import React from 'react';
 
-import { CreateVaultSteps, useCreateVaultSteps } from '~/lib/stores';
+import { CreateVaultSteps, useCreateVaultStore } from '~/lib/stores';
 
-import { BiometricDetails, Box, ConnectAccount, SlideIn } from './_components';
+import {
+  BiometricDetails,
+  Box,
+  ConnectAccount,
+  SlideIn,
+  ThresholdSelect,
+} from './_components';
 
 const CreateVault = () => {
-  const { currentStep } = useCreateVaultSteps();
+  const { currentStep } = useCreateVaultStore();
 
   return (
     <div className='flex h-screen w-full items-start justify-center py-24'>
@@ -20,6 +26,11 @@ const CreateVault = () => {
         {currentStep === CreateVaultSteps.CreateBiometricScan && (
           <SlideIn>
             <BiometricDetails />
+          </SlideIn>
+        )}
+        {currentStep === CreateVaultSteps.ConfigureRootKeys && (
+          <SlideIn>
+            <ThresholdSelect />
           </SlideIn>
         )}
       </Box>

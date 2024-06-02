@@ -3,7 +3,7 @@
 import React, { useRef, useState } from 'react';
 import Webcam from 'react-webcam';
 
-import { useCreateVaultSteps } from '~/lib/stores';
+import { useCreateVaultStore } from '~/lib/stores';
 
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -14,7 +14,7 @@ import { ArrowLeftIcon, ArrowRightIcon, ScanFace } from 'lucide-react';
 
 export const BiometricDetails = () => {
   let id: string | number;
-  const { goToNextStep, goToPreviousStep } = useCreateVaultSteps();
+  const { goToNextStep, goToPreviousStep } = useCreateVaultStore();
   const webcamRef = useRef<Webcam>(null);
 
   const [isScanning, setIsScanning] = useState<boolean>(false);
@@ -25,10 +25,9 @@ export const BiometricDetails = () => {
       if (!screenshot) {
         throw new Error('Failed to Capture Face');
       }
-      // timeout 3 sec
-      await new Promise((resolve) => setTimeout(resolve, 3000)).then(
-        () => screenshot
-      );
+      await new Promise((resolve) => {
+        setTimeout(resolve, 3000);
+      }).then(() => screenshot);
       return Promise.resolve(screenshot);
     },
     onMutate: () => {

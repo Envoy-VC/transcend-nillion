@@ -2,14 +2,14 @@
 
 import React from 'react';
 
-import { useCreateVaultSteps } from '~/lib/stores';
+import { useCreateVaultStore } from '~/lib/stores';
 
 import { Button } from '~/components/ui/button';
 
 import { ArrowRightIcon } from 'lucide-react';
 
 export const ConnectAccount = () => {
-  const { goToNextStep } = useCreateVaultSteps();
+  const { goToNextStep } = useCreateVaultStore();
   return (
     <div className='flex flex-col gap-4'>
       <div className='mx-auto max-w-sm text-center text-xl font-semibold text-neutral-700'>

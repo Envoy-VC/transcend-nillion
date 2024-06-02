@@ -9,7 +9,7 @@ export const ResizablePanel = ({ children }: PropsWithChildren) => {
   const [ref, { height }] = useMeasure();
 
   return (
-    <MotionConfig transition={{ duration: 0.25 }}>
+    <MotionConfig transition={{ duration: 0.45 }}>
       <motion.div
         animate={{ height: height || 'auto' }}
         className='relative overflow-hidden rounded-3xl shadow-[rgba(0,0,0,0.05)_0px_6px_24px_0px,rgba(0,0,0,0.08)_0px_0px_0px_1px]'

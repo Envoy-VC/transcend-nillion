@@ -21,9 +21,9 @@ interface StepsActions {
   reset: () => void;
 }
 
-export const useCreateVaultSteps = create<StepsState & StepsActions>(
+export const useCreateVaultStore = create<StepsState & StepsActions>(
   (set, get) => ({
-    currentStep: CreateVaultSteps.ConnectAccount,
+    currentStep: CreateVaultSteps.ConfigureRootKeys,
     goToNextStep: () => {
       const { currentStep, hasNextStep } = get();
       const canGoToNextStep = hasNextStep();
