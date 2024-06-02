@@ -1,3 +1,4 @@
+// @ts-nocheck
 import threshold from '@celo/blind-threshold-bls';
 import crypto from 'node:crypto';
 

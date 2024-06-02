@@ -1,15 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
-import useMeasure from 'react-use-measure';
+import React from 'react';
 
 import { CreateVaultSteps, useCreateVaultStore } from '~/lib/stores';
 
-import { motion } from 'framer-motion';
-
 import {
   Carousel,
-  type CarouselApi,
   CarouselContent,
   CarouselItem,
 } from '~/components/ui/carousel';
