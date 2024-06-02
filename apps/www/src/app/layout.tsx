@@ -1,14 +1,19 @@
+import localFont from 'next/font/local';
 import { headers } from 'next/headers';
 
 import { wagmiConfig } from '~/lib/viem';
 
-import { GeistSans } from 'geist/font/sans';
 import type { Metadata } from 'next';
 import { cookieToInitialState } from 'wagmi';
 import { Web3Provider } from '~/providers';
 import '~/styles/globals.css';
 
 import { Toaster } from '~/components/ui/sonner';
+
+const sfPro = localFont({
+  src: '../../public/sf-pro.ttf',
+  variable: '--font-sans',
+});
 
 export const metadata: Metadata = {
   title: 'Create T3 App',
@@ -24,7 +29,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <html lang='en'>
-      <body className={`font-sans ${GeistSans.variable}`}>
+      <body className={`font-sans ${sfPro.variable}`}>
         <Web3Provider initialState={initialState}>{children}</Web3Provider>
         <Toaster />
       </body>
