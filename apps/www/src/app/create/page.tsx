@@ -8,6 +8,7 @@ import {
   BiometricDetails,
   Box,
   ConnectAccount,
+  SelectPeers,
   SlideIn,
   ThresholdSelect,
 } from './_components';
@@ -31,6 +32,11 @@ const CreateVault = () => {
         {currentStep === CreateVaultSteps.ConfigureRootKeys && (
           <SlideIn>
             <ThresholdSelect />
+          </SlideIn>
+        )}
+        {currentStep === CreateVaultSteps.SelectPeers && (
+          <SlideIn>
+            <SelectPeers />
           </SlideIn>
         )}
       </Box>

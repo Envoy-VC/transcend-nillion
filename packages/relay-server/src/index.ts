@@ -109,6 +109,7 @@ node2.addEventListener('peer:discovery', (e) => {
 
 node1.addEventListener('peer:connect', (e) => {
   const peer = e.detail;
+
   console.log(`Node 1 connected to: ${nodes[peer.toString()]}`);
 });
 

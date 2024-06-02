@@ -23,7 +23,7 @@ interface StepsActions {
 
 export const useCreateVaultStore = create<StepsState & StepsActions>(
   (set, get) => ({
-    currentStep: CreateVaultSteps.ConfigureRootKeys,
+    currentStep: CreateVaultSteps.SelectPeers,
     goToNextStep: () => {
       const { currentStep, hasNextStep } = get();
       const canGoToNextStep = hasNextStep();
