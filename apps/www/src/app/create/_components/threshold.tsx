@@ -45,58 +45,64 @@ export const ThresholdSelect = () => {
   };
 
   return (
-    <div className='flex flex-col gap-4'>
+    <div className='flex h-full flex-col gap-4'>
       <div className='mx-auto max-w-sm pt-4 text-center text-xl font-semibold text-neutral-700'>
         Configure Threshold for Vault Access and Key Recovery
       </div>
-      <div>
+      <div className='h-full'>
         <Form {...form}>
           <form
-            className='space-y-4'
+            className='flex h-full flex-col justify-between space-y-4'
             onSubmit={form.handleSubmit(onSubmit, onError)}
           >
-            <FormField
-              control={form.control}
-              name='total'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Total Shares</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder='Total Shares'
-                      type='number'
-                      {...field}
-                      onChange={(e) => field.onChange(parseInt(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Total number of shares for the vault
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='threshold'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Threshold</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder='Threshold Shares'
-                      type='number'
-                      {...field}
-                      onChange={(e) => field.onChange(parseInt(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Number of shares required to access the vault
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className='flex flex-col gap-4'>
+              <FormField
+                control={form.control}
+                name='total'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Total Shares</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder='Total Shares'
+                        type='number'
+                        {...field}
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value))
+                        }
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Total number of shares for the vault
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name='threshold'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Threshold</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder='Threshold Shares'
+                        type='number'
+                        {...field}
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value))
+                        }
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Number of shares required to access the vault
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <div className='flex w-full flex-row items-center gap-4'>
               <Button
                 className='w-full'

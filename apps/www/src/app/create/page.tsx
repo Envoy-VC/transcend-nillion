@@ -1,44 +1,49 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
+import useMeasure from 'react-use-measure';
 
 import { CreateVaultSteps, useCreateVaultStore } from '~/lib/stores';
+
+import { motion } from 'framer-motion';
+
+import {
+  Carousel,
+  type CarouselApi,
+  CarouselContent,
+  CarouselItem,
+} from '~/components/ui/carousel';
 
 import {
   BiometricDetails,
   Box,
   ConnectAccount,
   SelectPeers,
-  SlideIn,
   ThresholdSelect,
 } from './_components';
 
 const CreateVault = () => {
-  const { currentStep } = useCreateVaultStore();
+  const { setApi } = useCreateVaultStore();
 
   return (
     <div className='flex h-screen w-full items-start justify-center py-24'>
       <Box>
-        {currentStep === CreateVaultSteps.ConnectAccount && (
-          <SlideIn>
-            <ConnectAccount />
-          </SlideIn>
-        )}
-        {currentStep === CreateVaultSteps.CreateBiometricScan && (
-          <SlideIn>
-            <BiometricDetails />
-          </SlideIn>
-        )}
-        {currentStep === CreateVaultSteps.ConfigureRootKeys && (
-          <SlideIn>
-            <ThresholdSelect />
-          </SlideIn>
-        )}
-        {currentStep === CreateVaultSteps.SelectPeers && (
-          <SlideIn>
-            <SelectPeers />
-          </SlideIn>
-        )}
+        <Carousel setApi={setApi}>
+          <CarouselContent>
+            <CarouselItem key={CreateVaultSteps.ConnectAccount}>
+              <ConnectAccount />
+            </CarouselItem>
+            <CarouselItem key={CreateVaultSteps.CreateBiometricScan}>
+              <BiometricDetails />
+            </CarouselItem>
+            <CarouselItem key={CreateVaultSteps.ConfigureRootKeys}>
+              <ThresholdSelect />
+            </CarouselItem>
+            <CarouselItem key={CreateVaultSteps.SelectPeers}>
+              <SelectPeers />
+            </CarouselItem>
+          </CarouselContent>
+        </Carousel>
       </Box>
     </div>
   );

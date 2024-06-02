@@ -1,6 +1,6 @@
 import React, { type PropsWithChildren } from 'react';
 
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 export const ignoreCircularReferences = () => {
   const seen = new WeakSet();
@@ -14,21 +14,18 @@ export const ignoreCircularReferences = () => {
   };
 };
 
-export const SlideIn = ({ children }: PropsWithChildren) => {
+export const SlideIn = ({
+  children,
+  key,
+}: PropsWithChildren & { key: string }) => {
   const animation = {
-    initial: { x: 382, opacity: 0 },
+    initial: { x: 0, opacity: 1 },
     animate: { x: 0, opacity: 1 },
-    exit: { x: -382, opacity: 0 },
+    exit: { x: -382, opacity: 1 },
   };
   return (
-    <AnimatePresence initial={false}>
-      <motion.div
-        key={JSON.stringify(children, ignoreCircularReferences())}
-        transition={{ duration: 0.25 }}
-        {...animation}
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
+    <motion.div key={key} transition={{ duration: 0.25 }} {...animation}>
+      {children}
+    </motion.div>
   );
 };

@@ -179,96 +179,99 @@ export const SelectPeers = () => {
   });
 
   return (
-    <div className='flex flex-col'>
-      <div className='mx-auto pt-4 text-center text-xl font-semibold text-neutral-700'>
-        Select Peers for Threshold Configuration
-      </div>
-      <div className='flex items-center py-4'>
-        <Input
-          className='max-w-sm'
-          placeholder='Filter peers...'
-          value={
-            (table.getColumn('peerId')?.getFilterValue() as
-              | string
-              | undefined) ?? ''
-          }
-          onChange={(event) =>
-            table.getColumn('peerId')?.setFilterValue(event.target.value)
-          }
-        />
-      </div>
-      <div className='rounded-md border'>
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  className='h-24 text-center'
-                  colSpan={columns.length}
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-      <div className='flex items-center justify-end space-x-2 py-4'>
-        <div className='flex-1 text-sm text-muted-foreground'>
-          {table.getFilteredSelectedRowModel().rows.length} of{' '}
-          {table.getFilteredRowModel().rows.length} peer(s) selected.
+    <div className='flex h-full flex-col justify-between'>
+      <div className='flex flex-col'>
+        <div className='mx-auto pt-4 text-center text-xl font-semibold text-neutral-700'>
+          Select Peers for Threshold Configuration
         </div>
-        <div className='space-x-2'>
-          <Button
-            disabled={!table.getCanPreviousPage()}
-            size='sm'
-            variant='outline'
-            onClick={() => table.previousPage()}
-          >
-            Previous Page
-          </Button>
-          <Button
-            disabled={!table.getCanNextPage()}
-            size='sm'
-            variant='outline'
-            onClick={() => table.nextPage()}
-          >
-            Next Page
-          </Button>
+
+        <div className='flex items-center py-4'>
+          <Input
+            className='max-w-sm'
+            placeholder='Filter peers...'
+            value={
+              (table.getColumn('peerId')?.getFilterValue() as
+                | string
+                | undefined) ?? ''
+            }
+            onChange={(event) =>
+              table.getColumn('peerId')?.setFilterValue(event.target.value)
+            }
+          />
+        </div>
+        <div className='rounded-md border'>
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && 'selected'}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    className='h-24 text-center'
+                    colSpan={columns.length}
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+        <div className='flex items-center justify-end space-x-2 py-4'>
+          <div className='flex-1 text-sm text-muted-foreground'>
+            {table.getFilteredSelectedRowModel().rows.length} of{' '}
+            {table.getFilteredRowModel().rows.length} peer(s) selected.
+          </div>
+          <div className='space-x-2'>
+            <Button
+              disabled={!table.getCanPreviousPage()}
+              size='sm'
+              variant='outline'
+              onClick={() => table.previousPage()}
+            >
+              Previous Page
+            </Button>
+            <Button
+              disabled={!table.getCanNextPage()}
+              size='sm'
+              variant='outline'
+              onClick={() => table.nextPage()}
+            >
+              Next Page
+            </Button>
+          </div>
         </div>
       </div>
       <div className='flex w-full flex-row items-center gap-4'>

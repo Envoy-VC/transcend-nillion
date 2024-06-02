@@ -11,11 +11,13 @@ import { ArrowRightIcon } from 'lucide-react';
 export const ConnectAccount = () => {
   const { goToNextStep } = useCreateVaultStore();
   return (
-    <div className='flex flex-col gap-4'>
-      <div className='mx-auto max-w-sm text-center text-xl font-semibold text-neutral-700'>
-        Connect your Nillion Account to create a Vault.
+    <div className='flex h-full flex-col justify-between gap-4'>
+      <div className='flex flex-col gap-4'>
+        <div className='mx-auto max-w-sm text-center text-xl font-semibold text-neutral-700'>
+          Connect your Nillion Account to create a Vault.
+        </div>
+        <Button className='bg-[#4D7CFE]'>Connect to Nillion</Button>
       </div>
-      <Button className='bg-[#4D7CFE]'>Connect to Nillion</Button>
 
       <Button onClick={goToNextStep}>
         Next

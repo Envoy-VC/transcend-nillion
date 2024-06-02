@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 
+import type { CarouselApi } from '~/components/ui/carousel';
+
 export enum CreateVaultSteps {
   ConnectAccount = 1,
   CreateBiometricScan,
@@ -9,52 +11,48 @@ export enum CreateVaultSteps {
 }
 
 interface StepsState {
-  currentStep: CreateVaultSteps;
+  api: CarouselApi | null;
 }
 
 interface StepsActions {
   goToNextStep: () => void;
   goToPreviousStep: () => void;
-  setSteps: (step: CreateVaultSteps) => void;
   hasNextStep: () => boolean;
   hasPreviousStep: () => boolean;
-  reset: () => void;
+  setApi: (api: CarouselApi) => void;
 }
 
 export const useCreateVaultStore = create<StepsState & StepsActions>(
   (set, get) => ({
-    currentStep: CreateVaultSteps.SelectPeers,
+    api: null,
+    setApi: (api) => {
+      set({ api });
+    },
     goToNextStep: () => {
-      const { currentStep, hasNextStep } = get();
+      const { hasNextStep, api } = get();
       const canGoToNextStep = hasNextStep();
       if (canGoToNextStep) {
-        set({ currentStep: currentStep + 1 });
+        api?.scrollNext();
       } else {
         throw new Error('Cannot go to next step');
       }
     },
     goToPreviousStep: () => {
-      const { currentStep, hasPreviousStep } = get();
+      const { hasPreviousStep, api } = get();
       const canGoToPreviousStep = hasPreviousStep();
       if (canGoToPreviousStep) {
-        set({ currentStep: currentStep - 1 });
+        api?.scrollPrev();
       } else {
         throw new Error('Cannot go to previous step');
       }
     },
-    setSteps: (step) => {
-      set({ currentStep: step });
-    },
     hasNextStep: () => {
-      const { currentStep } = get();
-      return currentStep < CreateVaultSteps.Finalize;
+      const { api } = get();
+      return api?.canScrollNext() ?? false;
     },
     hasPreviousStep: () => {
-      const { currentStep } = get();
-      return currentStep > CreateVaultSteps.ConnectAccount;
-    },
-    reset: () => {
-      set({ currentStep: CreateVaultSteps.ConnectAccount });
+      const { api } = get();
+      return api?.canScrollPrev() ?? false;
     },
   })
 );
