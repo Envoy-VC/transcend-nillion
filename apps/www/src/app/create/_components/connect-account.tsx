@@ -1,8 +1,12 @@
 'use client';
 
+import Image from 'next/image';
+
 import React from 'react';
 
 import { useCreateVaultStore } from '~/lib/stores';
+
+import NillionBG from 'public/nillion-bg.png';
 
 import { Button } from '~/components/ui/button';
 
@@ -16,6 +20,13 @@ export const ConnectAccount = () => {
         <div className='mx-auto max-w-sm text-center text-xl font-semibold text-neutral-700'>
           Connect your Nillion Account to create a Vault.
         </div>
+        <Image
+          alt='Nillion'
+          className='mx-auto'
+          height={400}
+          src={NillionBG.src}
+          width={1000}
+        />
         <Button className='bg-[#4D7CFE]'>Connect to Nillion</Button>
       </div>
 
