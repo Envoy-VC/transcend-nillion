@@ -61,7 +61,7 @@ export const ThresholdSelect = () => {
                 name='total'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Total Shares</FormLabel>
+                    <FormLabel>Key Shares</FormLabel>
                     <FormControl>
                       <Input
                         placeholder='Total Shares'
@@ -73,7 +73,8 @@ export const ThresholdSelect = () => {
                       />
                     </FormControl>
                     <FormDescription>
-                      Total number of shares for the vault
+                      Total number of shares the vault key should be divided
+                      into.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -84,7 +85,7 @@ export const ThresholdSelect = () => {
                 name='threshold'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Threshold</FormLabel>
+                    <FormLabel>Threshold Shares</FormLabel>
                     <FormControl>
                       <Input
                         placeholder='Threshold Shares'
@@ -96,7 +97,7 @@ export const ThresholdSelect = () => {
                       />
                     </FormControl>
                     <FormDescription>
-                      Number of shares required to access the vault
+                      Number of shares required to recreate the vault key.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
