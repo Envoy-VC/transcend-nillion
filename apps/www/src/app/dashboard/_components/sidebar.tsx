@@ -18,10 +18,12 @@ const sidebarItems1 = [
   {
     name: 'Secrets Engine',
     href: '/dashboard/engine',
+    regex: /^\/dashboard\/engine.*$/,
   },
   {
     name: 'Tools',
     href: '/dashboard/tools',
+    regex: /^\/dashboard\/tools.*$/,
   },
 ];
 
@@ -49,7 +51,9 @@ export const Sidebar = () => {
         </div>
         <div className='flex w-full flex-col gap-[3px]'>
           {sidebarItems1.map((item) => {
-            const isActive = item.href === pathname;
+            const isActive = item.regex
+              ? RegExp(item.regex).test(pathname)
+              : item.href === pathname;
 
             return (
               <Button

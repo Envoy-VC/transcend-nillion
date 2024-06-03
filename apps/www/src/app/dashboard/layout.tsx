@@ -6,7 +6,7 @@ const DashboardLayout = ({ children }: PropsWithChildren) => {
   return (
     <div className='flex flex-row'>
       <Sidebar />
-      {children}
+      <div className='mx-auto my-12 w-full max-w-screen-lg'>{children}</div>
     </div>
   );
 };

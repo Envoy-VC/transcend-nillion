@@ -1,7 +1,13 @@
 import React from 'react';
 
+import { Header } from '../_components';
+
 const SecretsEngine = () => {
-  return <div>SecretsEngine</div>;
+  return (
+    <div>
+      <Header title='Secrets Engine' />
+    </div>
+  );
 };
 
 export default SecretsEngine;
