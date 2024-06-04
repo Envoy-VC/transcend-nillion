@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 
 import NillionBG from 'public/nillion-bg.png';
 import { useStep } from 'usehooks-ts';
+import { ConnectNillion } from '~/components';
 
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
@@ -56,7 +57,7 @@ const ConnectAccountStep = ({ actions }: StepComponentProps) => {
           src={NillionBG.src}
           width={1000}
         />
-        <Button className='bg-[#4D7CFE]'>Connect to Nillion</Button>
+        <ConnectNillion />
       </div>
 
       <Button onClick={() => actions.goToNextStep()}>

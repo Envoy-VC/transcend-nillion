@@ -1,3 +1,3 @@
-import { Navbar } from './navbar';
-
-export { Navbar };
+export * from './navbar';
+export * from './connect-nillion';
+export * from './text-copy';
