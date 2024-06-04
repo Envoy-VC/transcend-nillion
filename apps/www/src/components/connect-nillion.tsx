@@ -5,16 +5,8 @@ import React from 'react';
 
 import { truncate } from '~/lib/utils';
 
-import { useCopyToClipboard } from 'usehooks-ts';
-
 import { Button } from '~/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '~/components/ui/dialog';
+import { Dialog, DialogContent, DialogTrigger } from '~/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs';
 
 import { TextCopy } from './text-copy';

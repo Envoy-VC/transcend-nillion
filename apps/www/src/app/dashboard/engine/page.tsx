@@ -1,11 +1,12 @@
 import React from 'react';
 
-import { Header } from '../_components';
+import { AllSecretsTable, Header } from '../_components';
 
 const SecretsEngine = () => {
   return (
     <div>
       <Header title='Secrets Engine' />
+      <AllSecretsTable />
     </div>
   );
 };
