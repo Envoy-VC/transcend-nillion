@@ -1,9 +1,11 @@
 'use client';
 
-/* eslint-disable @next/next/no-img-element -- custom image for avatar */
 import React from 'react';
 
-import { truncate } from '~/lib/utils';
+import { useNillion } from '~/lib/hooks';
+
+import { ed25519 } from '@noble/curves/ed25519';
+import baseX from 'base-x';
 
 import { Button } from '~/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '~/components/ui/dialog';
@@ -12,33 +14,31 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs';
 import { TextCopy } from './text-copy';
 
 export const ConnectNillion = () => {
-  const connected = true;
-  const userKey = '77hjnsf7d7tj4nmadasdjehfbajfna9842sdda';
-  if (!connected) {
-    return <Button className='bg-[#4D7CFE]'>Connect to Nillion</Button>;
+  const base58 = baseX(
+    '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
+  );
+  const { userKey, isConnected, connectToNillion } = useNillion();
+  if (!isConnected || !userKey) {
+    return (
+      <Button className='bg-[#4D7CFE]' onClick={connectToNillion}>
+        Connect to Nillion
+      </Button>
+    );
   }
+
+  const privateKey = Buffer.from(base58.decode(userKey).subarray(32)).toString(
+    'hex'
+  );
+  const pubKey = Buffer.from(ed25519.getPublicKey(privateKey)).toString('hex');
 
   return (
     <Dialog>
       <DialogTrigger>
-        <Button
-          className='h-12 w-full justify-start rounded-xl'
-          variant='outline'
-        >
-          <div className='flex flex-row items-center gap-3'>
-            <img
-              alt=''
-              className='h-9 w-9 rounded-full'
-              src={`https://api.dicebear.com/8.x/shapes/svg?seed=${userKey}`}
-            />
-
-            <div className='flex flex-col items-start'>
-              <div className='font-semibold'>{truncate(userKey)}</div>
-            </div>
-          </div>
+        <Button className='w-full bg-[#4D7CFE]' onClick={connectToNillion}>
+          Connected to Nillion
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className='w-full max-w-xl'>
         <div className='flex flex-row items-center'>
           <Tabs className='w-[400px]' defaultValue='details'>
             <TabsList>
@@ -48,11 +48,15 @@ export const ConnectNillion = () => {
             <TabsContent className='py-3' value='details'>
               <div className='flex flex-row items-center gap-2'>
                 <div className='font-medium'>User ID: </div>
-                <TextCopy text={userKey} />
+                <TextCopy text={pubKey} />
               </div>
               <div className='flex flex-row items-center gap-2'>
                 <div className='font-medium'>User Key: </div>
                 <TextCopy text={userKey} type='password' />
+              </div>
+              <div className='flex flex-row items-center gap-2'>
+                <div className='font-medium'>Private Key: </div>
+                <TextCopy text={privateKey} type='password' />
               </div>
             </TabsContent>
             <TabsContent value='libp2p'>Change your password here.</TabsContent>

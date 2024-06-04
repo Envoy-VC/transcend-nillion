@@ -15,6 +15,7 @@ import { CircleCheck, CopyIcon, Eye, EyeOff } from 'lucide-react';
 interface TextCopyProps {
   text: string;
   type?: 'text' | 'password';
+  enableTruncate?: boolean;
   canCopy?: boolean;
   enableToast?: boolean;
 }
@@ -22,6 +23,7 @@ interface TextCopyProps {
 export const TextCopy = ({
   text,
   type = 'text',
+  enableTruncate = true,
   canCopy = true,
   enableToast = false,
 }: TextCopyProps) => {
@@ -68,10 +70,14 @@ export const TextCopy = ({
     <div className='flex flex-row items-center gap-2'>
       <div className='font-semibold'>
         {type === 'text'
-          ? truncate(text)
+          ? enableTruncate
+            ? truncate(text)
+            : text
           : hidden
             ? '*'.repeat(24)
-            : truncate(text)}
+            : enableTruncate
+              ? truncate(text)
+              : text}
       </div>
       {type === 'password' && (
         <Button
