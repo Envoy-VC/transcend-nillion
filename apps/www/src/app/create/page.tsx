@@ -15,7 +15,6 @@ import {
   Box,
   ConnectAccount,
   SelectPeers,
-  ThresholdSelect,
 } from './_components';
 
 const CreateVault = () => {
@@ -31,9 +30,6 @@ const CreateVault = () => {
             </CarouselItem>
             <CarouselItem key={CreateVaultSteps.CreateBiometricScan}>
               <BiometricDetails />
-            </CarouselItem>
-            <CarouselItem key={CreateVaultSteps.ConfigureRootKeys}>
-              <ThresholdSelect />
             </CarouselItem>
             <CarouselItem key={CreateVaultSteps.SelectPeers}>
               <SelectPeers />

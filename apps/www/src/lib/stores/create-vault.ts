@@ -5,7 +5,6 @@ import type { CarouselApi } from '~/components/ui/carousel';
 export enum CreateVaultSteps {
   ConnectAccount = 1,
   CreateBiometricScan,
-  ConfigureRootKeys,
   SelectPeers,
   Finalize,
 }

@@ -78,6 +78,18 @@ export const NewSecretForm = () => {
           onSubmit={form.handleSubmit(onSubmit, onError)}
         >
           <div className='flex w-full flex-col gap-2'>
+            <FormField
+              control={form.control}
+              name={`path`}
+              render={({ field }) => (
+                <FormItem className='w-full max-w-xs'>
+                  <FormControl>
+                    <Input placeholder='Secret Path' {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             {array.fields.map((item, index) => {
               const type = form.watch(`secrets.${index}.type`);
               return (
@@ -188,6 +200,7 @@ const secretSchema = z.object({
 
 const formSchema = z
   .object({
+    path: z.string().min(1),
     secrets: z.array(secretSchema).min(1),
   })
   .refine(
