@@ -7,7 +7,7 @@ import { LoginForm } from './_components';
 
 const LoginPage = () => {
   return (
-    <div className='flex items-center py-24 justify-center'>
+    <div className='flex items-center justify-center py-24'>
       <Box>
         <LoginForm />
       </Box>

@@ -26,6 +26,7 @@
     "@libp2p/mplex": "^10.0.24",
     "@libp2p/pubsub-peer-discovery": "^10.0.2",
     "@libp2p/websockets": "^8.0.24",
+    "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-checkbox": "^1.0.4",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
