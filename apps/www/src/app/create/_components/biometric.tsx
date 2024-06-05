@@ -30,6 +30,7 @@ export const BiometricDetails = () => {
       const res = await getDescriptors(screenshot);
       console.log(res);
       setDescriptors(res);
+      setIsScanning(false);
       return descriptors;
     },
   });
