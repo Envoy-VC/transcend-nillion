@@ -3,6 +3,7 @@ import faceapi from 'face-api.js';
 
 import { writeFileSync } from 'fs';
 
+const rootPath = '../../apps/www/public';
 // Images to Compare
 const IMAGE_1_PATH = './assets/photo1.jpeg';
 const IMAGE_2_PATH = './assets/n1.jpeg';
@@ -11,11 +12,21 @@ import { Canvas, Image, ImageData } from 'canvas';
 // @ts-expect-error err
 faceapi.env.monkeyPatch({ Canvas, Image, ImageData });
 
-await faceapi.nets.ssdMobilenetv1.loadFromDisk('./models/ssd_mobilenetv1');
-await faceapi.nets.tinyFaceDetector.loadFromDisk('./models/tiny_face_detector');
-await faceapi.nets.faceLandmark68Net.loadFromDisk('./models/face_landmark_68');
-await faceapi.nets.faceRecognitionNet.loadFromDisk('./models/face_recognition');
-await faceapi.nets.faceExpressionNet.loadFromDisk('./models/face_expression');
+await faceapi.nets.ssdMobilenetv1.loadFromDisk(
+  `${rootPath}/models/ssd_mobilenetv1`
+);
+await faceapi.nets.tinyFaceDetector.loadFromDisk(
+  `${rootPath}/models/tiny_face_detector`
+);
+await faceapi.nets.faceLandmark68Net.loadFromDisk(
+  `${rootPath}/models/face_landmark_68`
+);
+await faceapi.nets.faceRecognitionNet.loadFromDisk(
+  `${rootPath}/models/face_recognition`
+);
+await faceapi.nets.faceExpressionNet.loadFromDisk(
+  `${rootPath}/models/face_expression`
+);
 
 const canvas1 = new Canvas(1000, 1000, 'image');
 const ctx1 = canvas1.getContext('2d');

@@ -53,6 +53,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "embla-carousel-react": "^8.1.3",
+    "face-api.js": "^0.22.2",
     "filters": "link:@libp2p/websockets/filters",
     "framer-motion": "^11.2.10",
     "geist": "^1.3.0",

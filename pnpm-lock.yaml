@@ -149,6 +149,9 @@ importers:
       embla-carousel-react:
         specifier: ^8.1.3
         version: 8.1.3(react@19.0.0-rc-935180c7e0-20240524)
+      face-api.js:
+        specifier: ^0.22.2
+        version: 0.22.2
       filters:
         specifier: link:@libp2p/websockets/filters
         version: link:@libp2p/websockets/filters
