@@ -140,6 +140,9 @@ importers:
       bignumber.js:
         specifier: ^9.1.2
         version: 9.1.2
+      blockstore-idb:
+        specifier: ^1.1.8
+        version: 1.1.8
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0
@@ -7253,6 +7256,18 @@ packages:
       - supports-color
     dev: false
 
+  /blockstore-idb@1.1.8:
+    resolution: {integrity: sha512-pW3aXuexGBhTo02Fs7pmYnwKpp2AGBLs1VWGY+IzHOF43S4Ue2HPn8N39OcJrGpqweIjofqZfWuwgnEDnelbXA==}
+    dependencies:
+      blockstore-core: 4.4.1
+      idb: 8.0.0
+      interface-blockstore: 5.2.10
+      interface-store: 5.1.8
+      multiformats: 13.1.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
   /bn.js@4.12.0:
     resolution: {integrity: sha512-c98Bf3tPniI+scsdk237ku1Dc3ujXQTSgyiPUDEOe7tRkhrqridvh8klBv0HCEso1OLOYcHuCv/cS6DNxKH+ZA==}
     dev: false
@@ -9743,6 +9758,10 @@ packages:
 
   /idb-keyval@6.2.1:
     resolution: {integrity: sha512-8Sb3veuYCyrZL+VBt9LJfZjLUPWVvqn8tG28VqYNFCo43KHcKuq+b4EiXGeuaLAQWL2YmyDgMp2aSpH9JHsEQg==}
+    dev: false
+
+  /idb@8.0.0:
+    resolution: {integrity: sha512-l//qvlAKGmQO31Qn7xdzagVPPaHTxXx199MhrAFuVBTPqydcPYBWjkrbv4Y0ktB+GmWOiwHl237UUOrLmQxLvw==}
     dev: false
 
   /ieee754@1.2.1:

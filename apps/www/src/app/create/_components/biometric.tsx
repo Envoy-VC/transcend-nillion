@@ -14,21 +14,22 @@ import { Button } from '~/components/ui/button';
 import { ArrowLeftIcon, ArrowRightIcon, ScanFace } from 'lucide-react';
 
 export const BiometricDetails = () => {
-  const { goToNextStep, goToPreviousStep } = useCreateVaultStore();
+  const { goToNextStep, goToPreviousStep, descriptors, setDescriptors } =
+    useCreateVaultStore();
   const { getDescriptors } = useBiometricAuth();
   const webcamRef = useRef<Webcam>(null);
 
   const [isScanning, setIsScanning] = useState<boolean>(false);
 
-  const { mutateAsync, data } = useMutation({
+  const { mutateAsync } = useMutation({
     mutationFn: async () => {
       const screenshot = webcamRef.current?.getScreenshot();
       if (!screenshot) {
         throw new Error('Failed to Capture Face');
       }
-      const descriptors = await getDescriptors(screenshot);
-      console.log(descriptors);
-      // TODO: Save descriptors to the Nillion
+      const res = await getDescriptors(screenshot);
+      console.log(res);
+      setDescriptors(res);
       return descriptors;
     },
   });
@@ -81,7 +82,11 @@ export const BiometricDetails = () => {
           <ArrowLeftIcon className='mr-2 h-4 w-4' />
           Back
         </Button>
-        <Button className='w-full' disabled={!data} onClick={goToNextStep}>
+        <Button
+          className='w-full'
+          disabled={!descriptors}
+          onClick={goToNextStep}
+        >
           Next
           <ArrowRightIcon className='ml-2 h-4 w-4' />
         </Button>

@@ -14,6 +14,7 @@ import {
   BiometricDetails,
   Box,
   ConnectAccount,
+  FinalizeStep,
   SelectPeers,
 } from './_components';
 
@@ -33,6 +34,9 @@ const CreateVault = () => {
             </CarouselItem>
             <CarouselItem key={CreateVaultSteps.SelectPeers}>
               <SelectPeers />
+            </CarouselItem>
+            <CarouselItem key={CreateVaultSteps.Finalize}>
+              <FinalizeStep />
             </CarouselItem>
           </CarouselContent>
         </Carousel>

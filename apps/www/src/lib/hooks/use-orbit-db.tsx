@@ -9,38 +9,41 @@ import { useEffect } from 'react';
 
 // @ts-expect-error - no types
 import { createOrbitDB } from '@orbitdb/core';
+import { IDBBlockstore } from 'blockstore-idb';
 import { createHelia } from 'helia';
 import { create } from 'zustand';
 
 import { useLibp2p } from './use-libp2p';
 
 interface OrbitDBStore {
-  db: any;
-  setDB: (db: any) => void;
+  orbitDB: any;
+  setOrbitDB: (orbitDB: any) => void;
 }
 
 export const useOrbitDBStore = create<OrbitDBStore>((set) => ({
-  db: null,
-  setDB: (db) => set({ db }),
+  orbitDB: null,
+  setOrbitDB: (orbitDB: any) => set({ orbitDB }),
 }));
 
 export const useOrbitDB = () => {
   const { node } = useLibp2p();
-
-  const { db, setDB } = useOrbitDBStore();
+  const { orbitDB, setOrbitDB } = useOrbitDBStore();
 
   useEffect(() => {
     const init = async () => {
-      if (node && !db) {
-        const ipfs = await createHelia({ libp2p: node });
+      if (node && !orbitDB) {
+        const blockstore = new IDBBlockstore('orbitdb');
+        const ipfs = await createHelia({
+          libp2p: node,
+          blockstore,
+        });
         const orbitdb = await createOrbitDB({ ipfs });
-        const db = await orbitdb.open('hello');
-        setDB(db);
+        setOrbitDB(orbitdb);
       }
     };
 
     void init();
-  }, [db, node, setDB]);
+  }, [orbitDB, node, setOrbitDB]);
 
-  return { db };
+  return { orbitDB };
 };

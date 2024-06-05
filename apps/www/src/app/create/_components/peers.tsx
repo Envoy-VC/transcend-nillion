@@ -10,6 +10,7 @@ import type { PeerInfo } from '@libp2p/interface';
 import {
   type ColumnDef,
   type ColumnFiltersState,
+  type RowSelectionState,
   type SortingState,
   type VisibilityState,
   flexRender,
@@ -134,14 +135,14 @@ export const SelectPeers = () => {
   'use no memo';
 
   const { discoveredPeers } = useLibp2p();
-  const { goToNextStep, goToPreviousStep } = useCreateVaultStore();
+  const { goToNextStep, goToPreviousStep, setPeers } = useCreateVaultStore();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
+  const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
 
   const [pagination, onPaginationChange] = React.useState({
     pageIndex: 0,
@@ -158,7 +159,21 @@ export const SelectPeers = () => {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
+    onRowSelectionChange: (value) => {
+      const fn = value as (old: RowSelectionState) => RowSelectionState;
+      const peersIndexes: number[] = [];
+      Object.entries(fn(rowSelection)).forEach(([key, value]) => {
+        if (value) {
+          peersIndexes.push(Number(key));
+        }
+      });
+      const selectedPeers = peersIndexes.map(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know it's not null
+        (index) => discoveredPeers[index]!
+      );
+      setPeers(selectedPeers);
+      setRowSelection(value);
+    },
     onPaginationChange,
     state: {
       pagination,
@@ -181,9 +196,8 @@ export const SelectPeers = () => {
             className='max-w-sm'
             placeholder='Filter peers...'
             value={
-              (table.getColumn('id')?.getFilterValue() as
-                | string
-                | undefined) ?? ''
+              (table.getColumn('id')?.getFilterValue() as string | undefined) ??
+              ''
             }
             onChange={(event) =>
               table.getColumn('id')?.setFilterValue(event.target.value)

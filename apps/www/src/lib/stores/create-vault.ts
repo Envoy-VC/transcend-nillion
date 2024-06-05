@@ -1,3 +1,4 @@
+import { PeerInfo } from '@libp2p/interface';
 import { create } from 'zustand';
 
 import type { CarouselApi } from '~/components/ui/carousel';
@@ -11,6 +12,8 @@ export enum CreateVaultSteps {
 
 interface StepsState {
   api: CarouselApi | null;
+  descriptors: number[] | null;
+  peers: PeerInfo[];
 }
 
 interface StepsActions {
@@ -19,11 +22,15 @@ interface StepsActions {
   hasNextStep: () => boolean;
   hasPreviousStep: () => boolean;
   setApi: (api: CarouselApi) => void;
+  setDescriptors: (descriptors: number[]) => void;
+  setPeers: (peers: PeerInfo[]) => void;
 }
 
 export const useCreateVaultStore = create<StepsState & StepsActions>(
   (set, get) => ({
     api: null,
+    descriptors: null,
+    peers: [],
     setApi: (api) => {
       set({ api });
     },
@@ -52,6 +59,12 @@ export const useCreateVaultStore = create<StepsState & StepsActions>(
     hasPreviousStep: () => {
       const { api } = get();
       return api?.canScrollPrev() ?? false;
+    },
+    setDescriptors: (descriptors) => {
+      set({ descriptors });
+    },
+    setPeers: (peers) => {
+      set({ peers });
     },
   })
 );

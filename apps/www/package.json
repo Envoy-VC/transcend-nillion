@@ -50,6 +50,7 @@
     "babel-plugin-react-compiler": "0.0.0-experimental-592953e-20240517",
     "base-x": "^4.0.0",
     "bignumber.js": "^9.1.2",
+    "blockstore-idb": "^1.1.8",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "embla-carousel-react": "^8.1.3",
