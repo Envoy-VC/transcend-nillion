@@ -37,8 +37,11 @@ export const useBiometricAuth = () => {
   }, []);
 
   const getDescriptors = async (image: string) => {
+    const imageElement = document.createElement('img');
+    imageElement.src = image;
+    await imageElement.decode();
     const res = await faceApi
-      .detectSingleFace(image, new faceApi.TinyFaceDetectorOptions())
+      .detectSingleFace(imageElement, new faceApi.TinyFaceDetectorOptions())
       .withFaceLandmarks()
       .withFaceDescriptor();
 
@@ -47,7 +50,7 @@ export const useBiometricAuth = () => {
     }
 
     const { descriptor } = res;
-    return descriptor;
+    return Array.from(descriptor).map((e) => Math.round(e * 1000));
   };
 
   return { isModelsLoading: isLoading, modelsLoaded: loaded, getDescriptors };

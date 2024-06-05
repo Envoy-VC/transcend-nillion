@@ -4,6 +4,7 @@ import Image from 'next/image';
 
 import React from 'react';
 
+import { useNillion } from '~/lib/hooks';
 import { useCreateVaultStore } from '~/lib/stores';
 
 import NillionBG from 'public/nillion-bg.png';
@@ -14,6 +15,7 @@ import { Button } from '~/components/ui/button';
 import { ArrowRightIcon } from 'lucide-react';
 
 export const ConnectAccount = () => {
+  const { userKey } = useNillion();
   const { goToNextStep } = useCreateVaultStore();
   return (
     <div className='flex h-full flex-col justify-between gap-4'>
@@ -31,7 +33,7 @@ export const ConnectAccount = () => {
         <ConnectNillion />
       </div>
 
-      <Button onClick={goToNextStep}>
+      <Button disabled={!userKey} onClick={goToNextStep}>
         Next
         <ArrowRightIcon className='ml-2 h-4 w-4' />
       </Button>

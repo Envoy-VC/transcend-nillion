@@ -2,9 +2,11 @@
 
 import * as React from 'react';
 
+import { useLibp2p } from '~/lib/hooks';
 import { useCreateVaultStore } from '~/lib/stores';
 import { truncate } from '~/lib/utils';
 
+import type { PeerInfo } from '@libp2p/interface';
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -45,26 +47,6 @@ import {
   MoreHorizontal,
 } from 'lucide-react';
 
-const data: PeerInfo[] = [
-  {
-    peerId: '12D3KooWFp53UrDJQSyiLT3imBEVhk6sq27RfLpDHa7UJm86GGCS',
-    multiaddr: [],
-  },
-  {
-    peerId: '12D3KooWPp3AuAB2nMXKHWqNxV48D5EezmL8Z1hwswy6bs8dwnPu',
-    multiaddr: [],
-  },
-  {
-    peerId: '12D3KooWRZ87ui1vwb4K13qhbKu7R6LPkgpUKaAqURQtp8vz8EjD',
-    multiaddr: [],
-  },
-];
-
-export interface PeerInfo {
-  peerId: string;
-  multiaddr: string[];
-}
-
 export const columns: ColumnDef<PeerInfo>[] = [
   {
     id: 'select',
@@ -91,19 +73,22 @@ export const columns: ColumnDef<PeerInfo>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'peerId',
+    accessorKey: 'id',
     header: ({ column }) => {
       return (
         <Button
           variant='ghost'
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
-          PeerId
+          Peer Id
           <ArrowUpDown className='ml-2 h-4 w-4' />
         </Button>
       );
     },
-    cell: ({ row }) => <div>{truncate(row.getValue('peerId'), 30)}</div>,
+    cell: ({ row }) => {
+      const ele = row.original;
+      return <div>{truncate(ele.id.toString(), 30)}</div>;
+    },
   },
   {
     id: 'actions',
@@ -122,14 +107,18 @@ export const columns: ColumnDef<PeerInfo>[] = [
           <DropdownMenuContent align='end'>
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(peer.peerId)}
+              onClick={() => navigator.clipboard.writeText(peer.id.toString())}
             >
               Copy Peer ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() =>
-                navigator.clipboard.writeText(peer.multiaddr.join(','))
+                navigator.clipboard.writeText(
+                  JSON.stringify({
+                    multiaddrs: peer.multiaddrs.map((addr) => addr.toString()),
+                  })
+                )
               }
             >
               Copy Multiaddrs
@@ -143,6 +132,8 @@ export const columns: ColumnDef<PeerInfo>[] = [
 
 export const SelectPeers = () => {
   'use no memo';
+
+  const { discoveredPeers } = useLibp2p();
   const { goToNextStep, goToPreviousStep } = useCreateVaultStore();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -158,7 +149,7 @@ export const SelectPeers = () => {
   });
 
   const table = useReactTable({
-    data,
+    data: discoveredPeers,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -190,12 +181,12 @@ export const SelectPeers = () => {
             className='max-w-sm'
             placeholder='Filter peers...'
             value={
-              (table.getColumn('peerId')?.getFilterValue() as
+              (table.getColumn('id')?.getFilterValue() as
                 | string
                 | undefined) ?? ''
             }
             onChange={(event) =>
-              table.getColumn('peerId')?.setFilterValue(event.target.value)
+              table.getColumn('id')?.setFilterValue(event.target.value)
             }
           />
         </div>

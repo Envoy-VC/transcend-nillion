@@ -3,6 +3,7 @@
 import React, { useRef, useState } from 'react';
 import Webcam from 'react-webcam';
 
+import { useBiometricAuth } from '~/lib/hooks';
 import { useCreateVaultStore } from '~/lib/stores';
 
 import { useMutation } from '@tanstack/react-query';
@@ -13,34 +14,22 @@ import { Button } from '~/components/ui/button';
 import { ArrowLeftIcon, ArrowRightIcon, ScanFace } from 'lucide-react';
 
 export const BiometricDetails = () => {
-  let id: string | number;
   const { goToNextStep, goToPreviousStep } = useCreateVaultStore();
+  const { getDescriptors } = useBiometricAuth();
   const webcamRef = useRef<Webcam>(null);
 
   const [isScanning, setIsScanning] = useState<boolean>(false);
 
-  const { mutateAsync } = useMutation({
+  const { mutateAsync, data } = useMutation({
     mutationFn: async () => {
       const screenshot = webcamRef.current?.getScreenshot();
       if (!screenshot) {
         throw new Error('Failed to Capture Face');
       }
-      await new Promise((resolve) => {
-        setTimeout(resolve, 3000);
-      }).then(() => screenshot);
-      return Promise.resolve(screenshot);
-    },
-    onMutate: () => {
-      id = toast.loading('Scanning Face...');
-    },
-    onSuccess: (data) => {
-      toast.success('Face Captured Successfully', { id });
-      console.log(data);
-      setIsScanning(false);
-    },
-    onError: () => {
-      toast.error('Failed to Capture Face', { id });
-      setIsScanning(false);
+      const descriptors = await getDescriptors(screenshot);
+      console.log(descriptors);
+      // TODO: Save descriptors to the Nillion
+      return descriptors;
     },
   });
 
@@ -67,7 +56,15 @@ export const BiometricDetails = () => {
       {isScanning ? (
         <Button
           className='mx-auto my-3 w-full max-w-[10rem] bg-[#4D7CFE]'
-          onClick={async () => await mutateAsync()}
+          onClick={async () => {
+            const id = toast.loading('Scanning Face...');
+            try {
+              await mutateAsync();
+              toast.success('Face Captured Successfully', { id });
+            } catch (error) {
+              toast.error('Failed to Capture Face', { id });
+            }
+          }}
         >
           Capture Face
         </Button>
@@ -84,7 +81,7 @@ export const BiometricDetails = () => {
           <ArrowLeftIcon className='mr-2 h-4 w-4' />
           Back
         </Button>
-        <Button className='w-full' onClick={goToNextStep}>
+        <Button className='w-full' disabled={!data} onClick={goToNextStep}>
           Next
           <ArrowRightIcon className='ml-2 h-4 w-4' />
         </Button>
