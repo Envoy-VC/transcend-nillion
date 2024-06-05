@@ -27,7 +27,7 @@ const createNode = async (
 ): Promise<Libp2p> => {
   const config: Libp2pOptions = {
     addresses: {
-      listen: ['/ip4/127.0.0.1/tcp/6969/ws'],
+      listen: [`/ip4/127.0.0.1/tcp/${process.env.PORT}/ws`],
     },
     transports: [
       webSockets({
