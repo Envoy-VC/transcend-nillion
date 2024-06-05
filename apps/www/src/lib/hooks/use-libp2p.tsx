@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 
 import { keys } from '@libp2p/crypto';
+import type { PeerId, PeerInfo } from '@libp2p/interface';
 import { createFromPrivKey } from '@libp2p/peer-id-factory';
 import baseX from 'base-x';
 import { create } from 'zustand';
@@ -12,16 +13,31 @@ import { useNillion } from './use-nillion';
 
 interface Libp2pStore {
   node: NodeType | null;
+  discoveredPeers: PeerInfo[];
+  connectedPeers: PeerId[];
   setNode: (node: NodeType) => void;
+  setDiscoveredPeers: (peers: PeerInfo[]) => void;
+  setConnectedPeers: (peers: PeerId[]) => void;
 }
 
 export const useLibp2pStore = create<Libp2pStore>((set) => ({
   node: null,
+  discoveredPeers: [],
+  connectedPeers: [],
   setNode: (node) => set({ node }),
+  setDiscoveredPeers: (discoveredPeers) => set({ discoveredPeers }),
+  setConnectedPeers: (connectedPeers) => set({ connectedPeers }),
 }));
 
 export const useLibp2p = () => {
-  const { node, setNode } = useLibp2pStore();
+  const {
+    node,
+    connectedPeers,
+    discoveredPeers,
+    setNode,
+    setDiscoveredPeers,
+    setConnectedPeers,
+  } = useLibp2pStore();
   const { userKey } = useNillion();
 
   useEffect(() => {
@@ -46,25 +62,69 @@ export const useLibp2p = () => {
       }
     };
     void init();
+
+    return () => {
+      if (node) {
+        void node.stop();
+      }
+    };
   }, [node, setNode, userKey]);
 
   useEffect(() => {
+    const onNodeDiscovery = (e: CustomEvent<PeerInfo>) => {
+      const peer = e.detail;
+      console.log('Discovered: ', peer);
+      const peers = Array.from(new Set([...discoveredPeers, peer]));
+      setDiscoveredPeers(peers);
+    };
     if (node) {
-      node.addEventListener('peer:discovery', (e) => {
-        const peer = e.detail;
-        console.log('Discovered: ', peer);
-      });
+      node.addEventListener('peer:discovery', onNodeDiscovery);
     }
-  }, [node]);
+
+    return () => {
+      if (node) {
+        node.removeEventListener('peer:discovery', onNodeDiscovery);
+      }
+    };
+  }, [discoveredPeers, node, setDiscoveredPeers]);
 
   useEffect(() => {
+    const onNodeConnect = (e: CustomEvent<PeerId>) => {
+      const peer = e.detail;
+      console.log('Connected: ', peer);
+      const peers = Array.from(new Set([...connectedPeers, peer]));
+      setConnectedPeers(peers);
+    };
     if (node) {
-      node.addEventListener('peer:connect', (e) => {
-        const peer = e.detail;
-        console.log('Connected: ', peer);
-      });
+      node.addEventListener('peer:connect', onNodeConnect);
     }
-  }, [node]);
 
-  return { node };
+    return () => {
+      if (node) {
+        node.removeEventListener('peer:connect', onNodeConnect);
+      }
+    };
+  }, [connectedPeers, node, setConnectedPeers]);
+
+  useEffect(() => {
+    const onPeerDisconnect = (e: CustomEvent<PeerId>) => {
+      const peer = e.detail;
+      console.log('Disconnected: ', peer);
+      const peers = connectedPeers.filter(
+        (p) => p.toString() !== peer.toString()
+      );
+      setConnectedPeers(peers);
+    };
+    if (node) {
+      node.addEventListener('peer:disconnect', onPeerDisconnect);
+    }
+
+    return () => {
+      if (node) {
+        node.removeEventListener('peer:disconnect', onPeerDisconnect);
+      }
+    };
+  }, [connectedPeers, node, setConnectedPeers]);
+
+  return { node, connectedPeers, discoveredPeers };
 };
