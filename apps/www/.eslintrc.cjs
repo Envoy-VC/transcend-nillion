@@ -20,6 +20,7 @@ module.exports = {
   settings: {
     'import/resolver': { typescript: { project } },
   },
+  ignorePatterns: ['dist/', 'node_modules/', '.next', '.turbo'],
   rules: {
     'no-console': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',

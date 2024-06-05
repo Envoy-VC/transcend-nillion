@@ -5,7 +5,7 @@ import { wagmiConfig } from '~/lib/viem';
 
 import type { Metadata } from 'next';
 import { cookieToInitialState } from 'wagmi';
-import { Web3Provider } from '~/providers';
+import { Libp2pProvider, Web3Provider } from '~/providers';
 import '~/styles/globals.css';
 
 import { Toaster } from '~/components/ui/sonner';
@@ -30,7 +30,9 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang='en'>
       <body className={`font-sans ${sfPro.variable}`}>
-        <Web3Provider initialState={initialState}>{children}</Web3Provider>
+        <Web3Provider initialState={initialState}>
+          <Libp2pProvider>{children}</Libp2pProvider>
+        </Web3Provider>
         <Toaster />
       </body>
     </html>

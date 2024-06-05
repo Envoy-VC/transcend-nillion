@@ -5,6 +5,7 @@ const config = {
   experimental: {
     reactCompiler: true,
   },
+  productionBrowserSourceMaps: true,
 };
 
 export default config;
