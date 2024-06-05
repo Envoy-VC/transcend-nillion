@@ -11,7 +11,15 @@ import type { Libp2pOptions } from 'libp2p';
 import { createLibp2p } from 'libp2p';
 import { pubsubPeerDiscovery } from '@libp2p/pubsub-peer-discovery';
 import type { Libp2p, PeerId } from '@libp2p/interface';
-import { createEd25519PeerId } from '@libp2p/peer-id-factory';
+import { createFromPrivKey } from '@libp2p/peer-id-factory';
+import { webRTC } from '@libp2p/webrtc';
+import baseX from 'base-x';
+import { keys } from '@libp2p/crypto';
+import { config as dotEnvConfig } from 'dotenv';
+
+dotEnvConfig({
+  path: '.env',
+});
 
 const createNode = async (
   peerId: PeerId,
@@ -19,12 +27,13 @@ const createNode = async (
 ): Promise<Libp2p> => {
   const config: Libp2pOptions = {
     addresses: {
-      listen: ['/ip4/127.0.0.1/tcp/0/ws'],
+      listen: ['/ip4/127.0.0.1/tcp/6969/ws'],
     },
     transports: [
       webSockets({
         filter: filters.all,
       }),
+      webRTC(),
     ],
     peerId,
     connectionEncryption: [noise()],
@@ -57,15 +66,18 @@ const createNode = async (
   return node;
 };
 
-const relayPeerID = await createEd25519PeerId();
-const node1PeerID = await createEd25519PeerId();
-const node2PeerID = await createEd25519PeerId();
-relayPeerID.toCID();
+const base58 = baseX(
+  '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
+);
+
+const key = base58.decode(process.env.USER_KEY ?? '');
+const pubKey = key.subarray(32);
+
+const privKey = new keys.Ed25519PrivateKey(key, pubKey);
+const relayPeerID = await createFromPrivKey(privKey);
 
 console.log(`
 Relay Peer ID: ${relayPeerID.toString()}
-Node 1 Peer ID: ${node1PeerID.toString()}
-Node 2 Peer ID: ${node2PeerID.toString()}
 `);
 
 const relay = await createNode(relayPeerID, []);
@@ -73,47 +85,14 @@ console.log(`Relay started...\n`);
 
 const relayMultiaddr = relay.getMultiaddrs().map((m) => m.toString());
 
-const [node1, node2] = await Promise.all([
-  createNode(node1PeerID, relayMultiaddr),
-  createNode(node2PeerID, relayMultiaddr),
-]);
+console.log('Listening on: ', relayMultiaddr);
 
-console.log(`
-Node 1 started...}
-Node 2 started...}
-\n`);
-
-const nodes = {
-  [node1.peerId.toString()]: 'Node 1',
-  [node2.peerId.toString()]: 'Node 2',
-  [relay.peerId.toString()]: 'Relay',
-};
-
-node1.addEventListener('peer:discovery', (e) => {
+relay.addEventListener('peer:discovery', (e) => {
   const peer = e.detail;
-  console.log(`Node 1 discovered: ${nodes[peer.id.toString()]}`);
-  const multiAddr = peer.multiaddrs;
-  if (multiAddr.length > 0) {
-    node1.dial(multiAddr).catch(console.log);
-  }
+  console.log(`Relay discovered: ${peer.id.toString()}`);
 });
 
-node2.addEventListener('peer:discovery', (e) => {
+relay.addEventListener('peer:connect', (e) => {
   const peer = e.detail;
-  console.log(`Node 2 discovered: ${nodes[peer.id.toString()]}`);
-  const multiAddr = peer.multiaddrs;
-  if (multiAddr.length > 0) {
-    node2.dial(multiAddr).catch(console.log);
-  }
-});
-
-node1.addEventListener('peer:connect', (e) => {
-  const peer = e.detail;
-
-  console.log(`Node 1 connected to: ${nodes[peer.toString()]}`);
-});
-
-node2.addEventListener('peer:connect', (e) => {
-  const peer = e.detail;
-  console.log(`Node 2 connected to: ${nodes[peer.toString()]}`);
+  console.log(`Relay connected to: ${peer.toString()}`);
 });

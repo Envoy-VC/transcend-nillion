@@ -13,6 +13,7 @@ module.exports = {
     require.resolve('@vercel/style-guide/eslint/node'),
     require.resolve('@vercel/style-guide/eslint/typescript'),
   ],
+  ignorePatterns: ['dist/', 'node_modules/', '.eslintrc.cjs'],
   settings: {
     'import/resolver': { typescript: { project } },
   },
