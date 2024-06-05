@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 
 import { keys } from '@libp2p/crypto';
 import { createFromPrivKey } from '@libp2p/peer-id-factory';
-import { multiaddr } from '@multiformats/multiaddr';
 import baseX from 'base-x';
 import { create } from 'zustand';
 
@@ -55,11 +54,6 @@ export const useLibp2p = () => {
         const peer = e.detail;
         console.log('Discovered: ', peer);
       });
-      void node.dial(
-        multiaddr(
-          '/ip4/127.0.0.1/tcp/58153/ws/p2p/12D3KooWBogRe57u53B3vRsExdJkMgmQrWnPkopVCENCeK344qcS'
-        )
-      );
     }
   }, [node]);
 
