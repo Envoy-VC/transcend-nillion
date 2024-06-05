@@ -1,7 +1,5 @@
 'use client';
 
-import Image from 'next/image';
-
 import React from 'react';
 
 import { useLibp2p, useNillion } from '~/lib/hooks';
@@ -22,7 +20,7 @@ export const FinalizeStep = () => {
           Finalize your vault creation options.
         </div>
       </div>
-      
+
       <div className='flex flex-row gap-2'>
         <Button className='w-full' variant='outline' onClick={goToPreviousStep}>
           <ArrowLeftIcon className='mr-2 h-4 w-4' />

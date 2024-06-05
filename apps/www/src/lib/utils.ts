@@ -1,9 +1,16 @@
+import { type PeerId } from '@libp2p/interface';
+import { sha512 } from '@noble/hashes/sha512';
+import baseX from 'base-x';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+const base58 = baseX(
+  '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
+);
 
 export const truncate = (
   str: string,
@@ -43,4 +50,11 @@ export const errorHandler = (error: unknown) => {
     return error.error;
   }
   return 'An error occurred';
+};
+
+export const peerIdToUserID = (peerId: PeerId) => {
+  const pubKey = (peerId.publicKey ?? new Uint8Array(36)).subarray(4);
+  const hash = sha512.create().update(pubKey).digest();
+  const userId = base58.encode(hash);
+  return userId;
 };

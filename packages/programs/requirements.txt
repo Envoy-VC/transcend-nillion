@@ -1,1 +1,2 @@
 nada-dsl===0.2.1
+py_nillion_client
