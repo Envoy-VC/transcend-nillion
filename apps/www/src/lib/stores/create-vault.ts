@@ -1,4 +1,4 @@
-import { PeerInfo } from '@libp2p/interface';
+import { type PeerInfo } from '@libp2p/interface';
 import { create } from 'zustand';
 
 import type { CarouselApi } from '~/components/ui/carousel';

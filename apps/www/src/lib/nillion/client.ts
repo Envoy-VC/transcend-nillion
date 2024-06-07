@@ -1,21 +1,21 @@
-import * as nillion from '@nillion/nillion-client-js-browser/nillion_client_js_browser.js';
-import {
-  NillionClient,
-  type NodeKey,
-  type UserKey,
-} from '@nillion/nillion-client-js-browser/nillion_client_js_browser.js';
-
+import * as nillion from '@nillion/nillion-client-js-browser';
 import { nillionConfig } from './config';
 
 import type { PaymentsConfig } from '~/types/nillion';
 
 export const initializeNillionClient = (
-  userkey: UserKey,
-  nodekey: NodeKey,
+  userkey: nillion.UserKey,
+  nodekey: nillion.NodeKey,
   websockets: string[],
   paymentsConfig: PaymentsConfig
-): NillionClient => {
-  const client = new NillionClient(
+): nillion.NillionClient => {
+  console.log({
+    userkey,
+    nodekey,
+    websockets,
+    paymentsConfig,
+  });
+  const client = new nillion.NillionClient(
     userkey,
     nodekey,
     websockets,
@@ -29,8 +29,8 @@ export const getNillionClient = async (userKey: string) => {
   await nillion.default();
   const nillionUserKey = nillion.UserKey.from_base58(userKey);
 
-  const wl = process.env.NEXT_PUBLIC_NILLION_NODEKEY_ALLOWLISTED_SEED
-    ? process.env.NEXT_PUBLIC_NILLION_NODEKEY_ALLOWLISTED_SEED.split(', ')
+  const wl = import.meta.env.VITE_NILLION_NODEKEY_ALLOWLISTED_SEED
+    ? import.meta.env.VITE_NILLION_NODEKEY_ALLOWLISTED_SEED.split(', ')
     : [`scaffold-eth-${String(Math.floor(Math.random() * 10000))}`];
   const randomElement = wl[Math.floor(Math.random() * wl.length)];
   const nodeKey = nillion.NodeKey.from_seed(randomElement ?? '');
@@ -38,7 +38,7 @@ export const getNillionClient = async (userKey: string) => {
   const client = initializeNillionClient(
     nillionUserKey,
     nodeKey,
-    nillionConfig.websockets,
+    nillionConfig.websockets as string[],
     nillionConfig.payments_config as PaymentsConfig
   );
   return {

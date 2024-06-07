@@ -1,6 +1,7 @@
 'use client';
 
 import type * as n from '@nillion/nillion-client-js-browser';
+
 import { toast } from 'sonner';
 import { create } from 'zustand';
 

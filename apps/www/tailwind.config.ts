@@ -19,7 +19,7 @@ const config = {
     },
     extend: {
       fontFamily: {
-        sans: ['var(--font-sans)'],
+        sans: ['SF Pro', 'ui-sans-serif', 'system-ui'],
       },
       colors: {
         border: 'var(--border)',

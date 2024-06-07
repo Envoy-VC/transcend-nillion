@@ -78,3 +78,8 @@
 .face-id-placeholder {
   border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
 }
+
+@font-face {
+  font-family: 'SF Pro';
+  src: url('../../public/sf-pro.ttf');
+}

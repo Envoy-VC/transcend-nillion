@@ -11,7 +11,6 @@ import { webRTC, webRTCDirect } from '@libp2p/webrtc';
 import { webSockets } from '@libp2p/websockets';
 import * as filters from '@libp2p/websockets/filters';
 import { createLibp2p } from 'libp2p';
-import { env } from '~/env';
 
 export type NodeType = Libp2p<{
   pubsub: PubSub<GossipsubEvents>;
@@ -47,7 +46,9 @@ export const createNode = async (peerId: PeerId): Promise<NodeType> => {
     connectionEncryption: [noise()],
     streamMuxers: [yamux(), mplex()],
     peerDiscovery: [
-      bootstrap({ list: [env.NEXT_PUBLIC_BOOTSTRAP_MULTIADDRS] }),
+      bootstrap({
+        list: [import.meta.env.VITE_BOOTSTRAP_MULTIADDRS as string],
+      }),
       pubsubPeerDiscovery({
         interval: 1000,
       }),

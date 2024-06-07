@@ -13,14 +13,13 @@ module.exports = {
     require.resolve('@vercel/style-guide/eslint/browser'),
     require.resolve('@vercel/style-guide/eslint/node'),
     require.resolve('@vercel/style-guide/eslint/react'),
-    require.resolve('@vercel/style-guide/eslint/next'),
     require.resolve('@vercel/style-guide/eslint/typescript'),
   ],
   parserOptions: { project },
   settings: {
     'import/resolver': { typescript: { project } },
   },
-  ignorePatterns: ['dist/', 'node_modules/', '.next', '.turbo'],
+  ignorePatterns: ['dist/', 'node_modules/', '.next', '.turbo', 'server.js'],
   rules: {
     'no-console': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',

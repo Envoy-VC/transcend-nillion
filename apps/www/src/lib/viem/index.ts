@@ -1,15 +1,8 @@
-import {
-  type Config,
-  cookieStorage,
-  createConfig,
-  createStorage,
-  http,
-} from 'wagmi';
+import { type Config, createConfig, http } from 'wagmi';
 import { anvil, mainnet, sepolia } from 'wagmi/chains';
 import { walletConnect } from 'wagmi/connectors';
-import { env } from '~/env';
 
-export const projectId = env.NEXT_PUBLIC_WALLETCONNECT_ID;
+export const projectId = import.meta.env.WALLETCONNECT_ID as string;
 
 const metadata = {
   name: 'Web3 Turbo Starter',
@@ -20,10 +13,6 @@ const metadata = {
 
 export const wagmiConfig: Config = createConfig({
   chains: [mainnet, sepolia, anvil],
-  ssr: true,
-  storage: createStorage({
-    storage: cookieStorage,
-  }),
   connectors: [walletConnect({ projectId, metadata, showQrModal: false })],
   transports: {
     [mainnet.id]: http(),

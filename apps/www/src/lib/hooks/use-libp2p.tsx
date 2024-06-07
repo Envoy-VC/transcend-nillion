@@ -46,18 +46,13 @@ export const useLibp2p = () => {
         const base58 = baseX(
           '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
         );
-
         const key = base58.decode(userKey);
         const pubKey = key.subarray(32);
 
         const privKey = new keys.Ed25519PrivateKey(key, pubKey);
         const peerId = await createFromPrivKey(privKey);
 
-        console.log({
-          peerId,
-        });
         const node = await createNode(peerId);
-        console.log(node);
         setNode(node);
       }
     };
@@ -73,7 +68,6 @@ export const useLibp2p = () => {
   useEffect(() => {
     const onNodeDiscovery = (e: CustomEvent<PeerInfo>) => {
       const peer = e.detail;
-      console.log('Discovered: ', peer);
       const peers = Array.from(new Set([...discoveredPeers, peer]));
       setDiscoveredPeers(peers);
     };
@@ -91,7 +85,6 @@ export const useLibp2p = () => {
   useEffect(() => {
     const onNodeConnect = (e: CustomEvent<PeerId>) => {
       const peer = e.detail;
-      console.log('Connected: ', peer);
       const peers = Array.from(new Set([...connectedPeers, peer]));
       setConnectedPeers(peers);
     };

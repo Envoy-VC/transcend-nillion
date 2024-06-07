@@ -1,10 +1,16 @@
 import { useEffect, useState } from 'react';
 
 import * as faceApi from 'face-api.js';
+import { useLocalStorage } from 'usehooks-ts';
 
 export const useBiometricAuth = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [loaded, setLoaded] = useState<boolean>(false);
+
+  const [descriptor, setDescriptor] = useLocalStorage<string>(
+    'descriptor',
+    []
+  );
 
   const loadModels = async () => {
     try {
@@ -53,5 +59,11 @@ export const useBiometricAuth = () => {
     return Array.from(descriptor).map((e) => Math.round(e * 1000));
   };
 
-  return { isModelsLoading: isLoading, modelsLoaded: loaded, getDescriptors };
+  return {
+    isModelsLoading: isLoading,
+    modelsLoaded: loaded,
+    getDescriptors,
+    descriptor,
+    setDescriptor,
+  };
 };

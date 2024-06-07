@@ -20,21 +20,24 @@ export const ConnectNillion = () => {
   const { userKey, isConnected, connectToNillion } = useNillion();
   if (!isConnected || !userKey) {
     return (
-      <Button className='bg-[#4D7CFE]' onClick={connectToNillion}>
+      <Button className='bg-[#4D7CFE] text-white' onClick={connectToNillion}>
         Connect to Nillion
       </Button>
     );
   }
 
-  const privateKey = Buffer.from(base58.decode(userKey).subarray(32)).toString(
-    'hex'
-  );
-  const pubKey = Buffer.from(ed25519.getPublicKey(privateKey)).toString('hex');
+  // const privateKey = Buffer.from(base58.decode(userKey).subarray(32)).toString(
+  //   'hex'
+  // );
+  // const pubKey = Buffer.from(ed25519.getPublicKey(privateKey)).toString('hex');
 
   return (
     <Dialog>
       <DialogTrigger>
-        <Button className='w-full bg-[#4D7CFE]' onClick={connectToNillion}>
+        <Button
+          className='w-full bg-[#4D7CFE] text-white'
+          onClick={connectToNillion}
+        >
           Connected to Nillion
         </Button>
       </DialogTrigger>
@@ -46,7 +49,7 @@ export const ConnectNillion = () => {
               <TabsTrigger value='libp2p'>Libp2p Node</TabsTrigger>
             </TabsList>
             <TabsContent className='py-3' value='details'>
-              <div className='flex flex-row items-center gap-2'>
+              {/* <div className='flex flex-row items-center gap-2'>
                 <div className='font-medium'>User ID: </div>
                 <TextCopy text={pubKey} />
               </div>
@@ -57,7 +60,7 @@ export const ConnectNillion = () => {
               <div className='flex flex-row items-center gap-2'>
                 <div className='font-medium'>Private Key: </div>
                 <TextCopy text={privateKey} type='password' />
-              </div>
+              </div> */}
             </TabsContent>
             <TabsContent value='libp2p'>Change your password here.</TabsContent>
           </Tabs>

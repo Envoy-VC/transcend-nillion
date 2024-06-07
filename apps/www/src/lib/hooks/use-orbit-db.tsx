@@ -33,6 +33,7 @@ export const useOrbitDB = () => {
     const init = async () => {
       if (node && !orbitDB) {
         const blockstore = new IDBBlockstore('orbitdb');
+        await blockstore.open();
         const ipfs = await createHelia({
           libp2p: node,
           blockstore,
@@ -45,5 +46,14 @@ export const useOrbitDB = () => {
     void init();
   }, [orbitDB, node, setOrbitDB]);
 
-  return { orbitDB };
+  const createDatabase = async (peers: string[]) => {
+    if (!orbitDB) {
+      throw new Error('OrbitDB not initialized');
+    }
+    const meta = { peers };
+    const db = await orbitDB.open('vault-db', { meta, type: 'documents' });
+    return db.address as string;
+  };
+
+  return { orbitDB, createDatabase };
 };
