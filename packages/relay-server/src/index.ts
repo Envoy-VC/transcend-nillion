@@ -12,7 +12,6 @@ import { createLibp2p } from 'libp2p';
 import { pubsubPeerDiscovery } from '@libp2p/pubsub-peer-discovery';
 import type { Libp2p, PeerId } from '@libp2p/interface';
 import { createFromPrivKey } from '@libp2p/peer-id-factory';
-import { webRTC } from '@libp2p/webrtc';
 import baseX from 'base-x';
 import { keys } from '@libp2p/crypto';
 import { config as dotEnvConfig } from 'dotenv';
@@ -33,7 +32,6 @@ const createNode = async (
       webSockets({
         filter: filters.all,
       }),
-      webRTC(),
     ],
     peerId,
     connectionEncryption: [noise()],
