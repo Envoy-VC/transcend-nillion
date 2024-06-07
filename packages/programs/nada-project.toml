@@ -5,8 +5,3 @@ authors = ["Vedant Chainani"]
 [[programs]]
 path = "src/main.py"
 prime_size = 128
-
-
-[[programs]]
-path = "src/test.py"
-prime_size = 128

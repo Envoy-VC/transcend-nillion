@@ -100,8 +100,8 @@ for ((i=1; i<=$num_node_keys; i++)); do
     nodekey_file=$(mktemp)
     "$NILLION_CLI" "$NILLION_CLI_COMMAND_NODE_KEYGEN" "$nodekey_file"
     NODEKEY_FILES+=("$nodekey_file")
-    update_env "NEXT_PUBLIC_NILLION_NODEKEY_PATH_PARTY_$i" "$nodekey_file" $ENV_TO_UPDATE
-    update_env "NEXT_PUBLIC_NILLION_NODEKEY_TEXT_PARTY_$i" "$(log_file_contents $nodekey_file)" $ENV_TO_UPDATE
+    update_env "VITE_NILLION_NODEKEY_PATH_PARTY_$i" "$nodekey_file" $ENV_TO_UPDATE
+    update_env "VITE_NILLION_NODEKEY_TEXT_PARTY_$i" "$(log_file_contents $nodekey_file)" $ENV_TO_UPDATE
 done
 
 # Generate user keys and add to .env - ex: NILLION_USERKEY_PATH_PARTY_1
@@ -109,21 +109,21 @@ for ((i=1; i<=$num_user_keys; i++)); do
     userkey_file=$(mktemp)
     "$NILLION_CLI" "$NILLION_CLI_COMMAND_USER_KEYGEN" "$userkey_file"
     USERKEY_FILES+=("$userkey_file")
-    update_env "NEXT_PUBLIC_NILLION_USERKEY_PATH_PARTY_$i" "$userkey_file" $ENV_TO_UPDATE
-    update_env "NEXT_PUBLIC_NILLION_USERKEY_TEXT_PARTY_$i" "$(log_file_contents $userkey_file)" $ENV_TO_UPDATE
+    update_env "VITE_NILLION_USERKEY_PATH_PARTY_$i" "$userkey_file" $ENV_TO_UPDATE
+    update_env "VITE_NILLION_USERKEY_TEXT_PARTY_$i" "$(log_file_contents $userkey_file)" $ENV_TO_UPDATE
 done
 
 echo "🔑 Node key and user keys have been generated and added to .env"
 
 # Add environment variables to .env
-update_env "NEXT_PUBLIC_NILLION_WEBSOCKETS" "$WEBSOCKET" $ENV_TO_UPDATE
-update_env "NEXT_PUBLIC_NILLION_CLUSTER_ID" "$CLUSTER_ID" $ENV_TO_UPDATE
-update_env "NEXT_PUBLIC_NILLION_BLOCKCHAIN_RPC_ENDPOINT" "$PAYMENTS_RPC" $ENV_TO_UPDATE
-update_env "NEXT_PUBLIC_NILLION_BLINDING_FACTORS_MANAGER_SC_ADDRESS" "$PAYMENTS_BF_ADDR" $ENV_TO_UPDATE
-update_env "NEXT_PUBLIC_NILLION_PAYMENTS_SC_ADDRESS" "$PAYMENTS_SC_ADDR" $ENV_TO_UPDATE
-update_env "NEXT_PUBLIC_NILLION_CHAIN_ID" "$PAYMENTS_CHAIN" $ENV_TO_UPDATE
-update_env "NEXT_PUBLIC_NILLION_WALLET_PRIVATE_KEY" "$WALLET_PRIVATE_KEY" $ENV_TO_UPDATE
-update_env "NEXT_PUBLIC_NILLION_BOOTNODE_MULTIADDRESS" "$BOOT_MULTIADDR" $ENV_TO_UPDATE
+update_env "VITE_NILLION_WEBSOCKETS" "$WEBSOCKET" $ENV_TO_UPDATE
+update_env "VITE_NILLION_CLUSTER_ID" "$CLUSTER_ID" $ENV_TO_UPDATE
+update_env "VITE_NILLION_BLOCKCHAIN_RPC_ENDPOINT" "$PAYMENTS_RPC" $ENV_TO_UPDATE
+update_env "VITE_NILLION_BLINDING_FACTORS_MANAGER_SC_ADDRESS" "$PAYMENTS_BF_ADDR" $ENV_TO_UPDATE
+update_env "VITE_NILLION_PAYMENTS_SC_ADDRESS" "$PAYMENTS_SC_ADDR" $ENV_TO_UPDATE
+update_env "VITE_NILLION_CHAIN_ID" "$PAYMENTS_CHAIN" $ENV_TO_UPDATE
+update_env "VITE_NILLION_WALLET_PRIVATE_KEY" "$WALLET_PRIVATE_KEY" $ENV_TO_UPDATE
+update_env "VITE_NILLION_BOOTNODE_MULTIADDRESS" "$BOOT_MULTIADDR" $ENV_TO_UPDATE
 
 echo "Running at process pid: $(pgrep -f $NILLION_DEVNET)"
 

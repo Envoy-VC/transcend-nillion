@@ -26,7 +26,7 @@ def get_euclidean_distance(actual: list[list[SecretInteger]], given: list[Secret
 
 def nada_main():
     party1 = Party(name="Party1")
-    party2 = Party(name="Party2")
+    party2 = Party(name="User")
 
     actual: list[SecretInteger] = []
     given: list[SecretInteger] = []

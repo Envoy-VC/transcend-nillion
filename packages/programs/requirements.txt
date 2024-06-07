@@ -1,2 +1,8 @@
-nada-dsl===0.2.1
-py_nillion_client
+asttokens==2.4.1
+asyncio==3.4.3
+nada-dsl==0.2.1
+parsial==0.1.0
+py-nillion-client==0.2.1
+python-dotenv==1.0.1
+richreports==0.2.0
+six==1.16.0
