@@ -2,7 +2,7 @@ import py_nillion_client as nillion
 from dotenv import dotenv_values, set_key
 import asyncio
 
-env = dotenv_values("../../apps/web/.env.local")
+env = dotenv_values("../../apps/www/.env.local")
 
 
 def create_nillion_client(userkey, nodekey):
@@ -43,9 +43,6 @@ async def main():
     program_name = "main"
     program_mir_path = f"./target/{program_name}.nada.bin"
 
-    print(cluster_id)
-    print(program_name)
-
     # store program
     action_id = await client.store_program(
         cluster_id, program_name, program_mir_path
@@ -55,7 +52,7 @@ async def main():
     print('Stored program. action_id:', action_id)
     print('Stored program_id:', program_id)
 
-    set_key("../../apps/web/.env.local",
+    set_key("../../apps/www/.env.local",
             "VITE_NILLION_PROGRAM_ID", program_id)
 
 

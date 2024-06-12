@@ -26,7 +26,7 @@ def get_euclidean_distance(actual: list[list[SecretInteger]], given: list[Secret
 
 def nada_main():
     party1 = Party(name="Party1")
-    party2 = Party(name="User")
+    party2 = Party(name="Party2")
 
     actual: list[SecretInteger] = []
     given: list[SecretInteger] = []
@@ -41,6 +41,6 @@ def nada_main():
     match = (distance < Integer(THRESHOLD)).if_else(Integer(1), Integer(0))
 
     return [
-        Output(distance, "euclidean_distance", party1),
-        Output(match, "match", party1)
+        Output(distance, "euclidean_distance", party2),
+        Output(match, "match", party2)
     ]
