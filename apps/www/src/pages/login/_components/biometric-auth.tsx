@@ -23,7 +23,7 @@ export const BiometricAuthStep = ({ actions }: StepComponentProps) => {
   const webcamRef = useRef<Webcam>(null);
 
   const { storeID, getDescriptors, setStoreID } = useBiometricAuth();
-  const { nillion, client, storeDescriptor } = useNillion();
+  const { nillion, client, storeDescriptor, compute } = useNillion();
   const { dbAddress } = useOrbitDB();
   const navigate = useNavigate();
   const { saveSession, isValidSession } = useSession();
@@ -42,10 +42,19 @@ export const BiometricAuthStep = ({ actions }: StepComponentProps) => {
       const descriptors = await getDescriptors(screenshot);
       const expires = Date.now() + 24 * 60 * 60 * 1000;
       if (storeID) {
-        // TODO: Nillion Program compute
-        const score = 100;
+        const res = await compute(nillion, client, [storeID], descriptors);
+        console.log(res);
+        if (res.match) {
+          await saveSession({
+            userId: client.user_id,
+            storeId: storeID,
+            score: res.distance,
+            expires,
+          });
+        } else {
+          throw new Error('Face does not match');
+        }
       } else {
-        // store descriptors
         const id = await storeDescriptor(nillion, client, descriptors);
         setStoreID(id);
         await saveSession({
@@ -63,6 +72,9 @@ export const BiometricAuthStep = ({ actions }: StepComponentProps) => {
       const isValid = await isValidSession();
       if (!isValid) {
         throw new Error('Session Invalid, Please Login Again');
+      }
+      if (dbAddress) {
+        navigate('/dashboard');
       }
     } catch (error) {
       toast.error(errorHandler(error));
@@ -92,7 +104,15 @@ export const BiometricAuthStep = ({ actions }: StepComponentProps) => {
       {isScanning ? (
         <Button
           className='mx-auto my-3 w-full max-w-[10rem] bg-[#4D7CFE]'
-          onClick={async () => await mutateAsync()}
+          onClick={async () => {
+            const id = toast.loading('Capturing Face');
+            try {
+              await mutateAsync();
+              toast.success('Face Captured', { id });
+            } catch (error) {
+              toast.error(errorHandler(error), { id });
+            }
+          }}
         >
           Capture Face
         </Button>

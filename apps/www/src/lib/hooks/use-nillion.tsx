@@ -4,7 +4,7 @@ import type * as n from '@nillion/nillion-client-js-browser';
 import { toast } from 'sonner';
 import { create } from 'zustand';
 
-import { getNillionClient, storeDescriptor } from '../nillion';
+import { getNillionClient, storeDescriptor ,compute} from '../nillion';
 import { errorHandler } from '../utils';
 import { useSnaps } from './use-snaps';
 
@@ -76,5 +76,6 @@ export const useNillion = () => {
     nillion,
     connectToNillion,
     storeDescriptor,
+    compute,
   };
 };
