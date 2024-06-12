@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return -- safe */
-import GlobalPolyFill from '@esbuild-plugins/node-globals-polyfill';
+import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
 import { type ViteDevServer, defineConfig } from 'vite';
@@ -36,7 +36,7 @@ export default defineConfig({
         global: 'globalThis',
       },
       plugins: [
-        GlobalPolyFill({
+        NodeGlobalsPolyfillPlugin({
           process: true,
           buffer: true,
         }),

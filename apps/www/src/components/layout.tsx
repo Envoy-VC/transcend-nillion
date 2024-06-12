@@ -7,6 +7,8 @@ import { Libp2pProvider } from '~/providers';
 
 import { Toaster } from '~/components/ui/sonner';
 
+import { Navbar } from './navbar';
+
 const queryClient = new QueryClient();
 
 export const Layout = ({ children }: PropsWithChildren) => {
@@ -14,8 +16,10 @@ export const Layout = ({ children }: PropsWithChildren) => {
   return (
     <QueryClientProvider client={queryClient}>
       <Libp2pProvider>
-        {children}
-
+        <div className='flex flex-col'>
+          <Navbar />
+          {children}
+        </div>
         <Toaster />
       </Libp2pProvider>
     </QueryClientProvider>
