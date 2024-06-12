@@ -11,7 +11,7 @@ import { Button } from './ui/button';
 import { CircleCheck, CopyIcon, Eye, EyeOff } from 'lucide-react';
 
 interface TextCopyProps {
-  text: string;
+  text: string | null;
   type?: 'text' | 'password';
   enableTruncate?: boolean;
   canCopy?: boolean;
@@ -32,6 +32,7 @@ export const TextCopy = ({
 
   const copyText = async () => {
     try {
+      if (!text) throw new Error('No text to copy');
       await copy(text);
       if (enableToast) toast.success('Copied to clipboard');
       setCopied(true);
@@ -63,34 +64,35 @@ export const TextCopy = ({
       return () => clearTimeout(id);
     }
   }, [copied]);
-
-  return (
-    <div className='flex flex-row items-center gap-2'>
-      <div className='font-semibold'>
-        {type === 'text'
-          ? enableTruncate
-            ? truncate(text)
-            : text
-          : hidden
-            ? '*'.repeat(24)
-            : enableTruncate
+  if (text)
+    return (
+      <div className='flex flex-row items-center gap-2'>
+        <div className='font-semibold'>
+          {type === 'text'
+            ? enableTruncate
               ? truncate(text)
-              : text}
+              : text
+            : hidden
+              ? '*'.repeat(24)
+              : enableTruncate
+                ? truncate(text)
+                : text}
+        </div>
+        {type === 'password' && (
+          <Button
+            className='h-8 w-8 p-0'
+            variant='ghost'
+            onClick={() => setHidden((prev) => !prev)}
+          >
+            {hidden ? <EyeOff size={16} /> : <Eye size={16} />}
+          </Button>
+        )}
+        {canCopy ? (
+          <Button className='h-8 w-8 p-0' variant='ghost' onClick={copyText}>
+            {copied ? <CircleCheck size={18} /> : <CopyIcon size={16} />}
+          </Button>
+        ) : null}
       </div>
-      {type === 'password' && (
-        <Button
-          className='h-8 w-8 p-0'
-          variant='ghost'
-          onClick={() => setHidden((prev) => !prev)}
-        >
-          {hidden ? <EyeOff size={16} /> : <Eye size={16} />}
-        </Button>
-      )}
-      {canCopy ? (
-        <Button className='h-8 w-8 p-0' variant='ghost' onClick={copyText}>
-          {copied ? <CircleCheck size={18} /> : <CopyIcon size={16} />}
-        </Button>
-      ) : null}
-    </div>
-  );
+    );
+  return null;
 };

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return -- safe */
+import GlobalPolyFill from '@esbuild-plugins/node-globals-polyfill';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
 import { type ViteDevServer, defineConfig } from 'vite';
@@ -30,10 +31,25 @@ export default defineConfig({
   plugins: [react(), wasm(), topLevelAwait(), wasmContentTypePlugin()],
   optimizeDeps: {
     exclude: ['@nillion/nillion-client-js-browser'],
+    esbuildOptions: {
+      define: {
+        global: 'globalThis',
+      },
+      plugins: [
+        GlobalPolyFill({
+          process: true,
+          buffer: true,
+        }),
+      ],
+    },
   },
   resolve: {
     alias: {
       '~': path.resolve(__dirname, './src'),
+      process: 'process/browser',
+      stream: 'stream-browserify',
+      zlib: 'browserify-zlib',
+      util: 'util',
     },
   },
   define: {
