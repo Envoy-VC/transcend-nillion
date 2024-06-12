@@ -41,6 +41,6 @@ def nada_main():
     match = (distance < Integer(THRESHOLD)).if_else(Integer(1), Integer(0))
 
     return [
-        Output(distance, "euclidean_distance", party2),
-        Output(match, "match", party2)
+        Output(distance, "euclidean_distance", party1),
+        Output(match, "match", party1)
     ]
