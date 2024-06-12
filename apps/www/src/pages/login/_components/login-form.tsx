@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { useNillion } from '~/lib/hooks';
+import { useNillion, useOrbitDB, useSession } from '~/lib/hooks';
 
 import { useStep } from 'usehooks-ts';
 import { ConnectNillion } from '~/components';
@@ -43,6 +44,8 @@ export interface StepComponentProps {
 
 const ConnectAccountStep = ({ actions }: StepComponentProps) => {
   const { userKey } = useNillion();
+  const { isValidSession } = useSession();
+  const navigate = useNavigate();
   return (
     <div className='flex flex-col gap-2'>
       <div className='flex flex-col gap-4'>
@@ -59,7 +62,17 @@ const ConnectAccountStep = ({ actions }: StepComponentProps) => {
         <ConnectNillion />
       </div>
 
-      <Button disabled={!userKey} onClick={() => actions.goToNextStep()}>
+      <Button
+        disabled={!userKey}
+        onClick={async () => {
+          const isValid = await isValidSession();
+          if (isValid) {
+            navigate('/dashboard');
+            return;
+          }
+          actions.goToNextStep();
+        }}
+      >
         Next
         <ArrowRightIcon className='ml-2 h-4 w-4' />
       </Button>
@@ -69,6 +82,9 @@ const ConnectAccountStep = ({ actions }: StepComponentProps) => {
 
 const DatabaseAddressStep = ({ actions }: StepComponentProps) => {
   const [address, setAddress] = useState<string>('');
+  const { setDBAddress } = useOrbitDB();
+  const navigate = useNavigate();
+
   return (
     <div className='flex flex-col gap-2'>
       <div className='flex flex-col gap-4'>
@@ -93,7 +109,13 @@ const DatabaseAddressStep = ({ actions }: StepComponentProps) => {
           <ArrowLeftIcon className='mr-2 h-4 w-4' />
           Back
         </Button>
-        <Button className='w-full'>
+        <Button
+          className='w-full'
+          onClick={() => {
+            setDBAddress(address);
+            navigate('/dashboard');
+          }}
+        >
           Import
           <ArrowRightIcon className='ml-2 h-4 w-4' />
         </Button>

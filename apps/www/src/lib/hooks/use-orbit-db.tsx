@@ -71,5 +71,5 @@ export const useOrbitDB = () => {
     return db.address as string;
   };
 
-  return { orbitDB, createDatabase, dbAddress, db };
+  return { orbitDB, createDatabase, dbAddress, db, setDBAddress };
 };

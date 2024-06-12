@@ -19,7 +19,7 @@ interface UserSession {
 }
 
 const validateSession = (session: UserSession) => {
-  return session.expires > Date.now();
+  return session.expires > Date.now() && session.score < 550;
 };
 
 const opts: SessionServiceOptions = {

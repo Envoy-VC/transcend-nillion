@@ -33,6 +33,7 @@ export const BiometricAuthStep = ({ actions }: StepComponentProps) => {
   const { mutateAsync } = useMutation({
     mutationFn: async () => {
       const screenshot = webcamRef.current?.getScreenshot();
+      setIsScanning(false);
       if (!screenshot) {
         throw new Error('Failed to Capture Face');
       }
@@ -42,8 +43,8 @@ export const BiometricAuthStep = ({ actions }: StepComponentProps) => {
       const descriptors = await getDescriptors(screenshot);
       const expires = Date.now() + 24 * 60 * 60 * 1000;
       if (storeID) {
+        // If Store ID exists, then we are verifying the face
         const res = await compute(nillion, client, [storeID], descriptors);
-        console.log(res);
         if (res.match) {
           await saveSession({
             userId: client.user_id,
@@ -55,6 +56,7 @@ export const BiometricAuthStep = ({ actions }: StepComponentProps) => {
           throw new Error('Face does not match');
         }
       } else {
+        // If Store ID does not exist, then we are storing the face
         const id = await storeDescriptor(nillion, client, descriptors);
         setStoreID(id);
         await saveSession({

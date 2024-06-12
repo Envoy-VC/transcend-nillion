@@ -33,7 +33,7 @@ export const ConnectNillion = () => {
 
   return (
     <Dialog>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         <Button
           className='w-full bg-[#4D7CFE] text-white'
           onClick={connectToNillion}
