@@ -1,8 +1,22 @@
-import React, { type PropsWithChildren } from 'react';
+import React, { type PropsWithChildren, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { useSession } from '~/lib/hooks';
 
 import { Sidebar } from './sidebar';
 
 export const DashboardLayout = ({ children }: PropsWithChildren) => {
+  const { isValidSession } = useSession();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    isValidSession().then((res) => {
+      if (!res) {
+        navigate('/login');
+      }
+    });
+  }, []);
+
   return (
     <div className='flex flex-row'>
       <Sidebar />
