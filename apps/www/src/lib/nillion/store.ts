@@ -1,4 +1,5 @@
 import type * as n from '@nillion/nillion-client-js-browser';
+
 import { nillionConfig } from './config';
 
 import type { JsInput } from '~/types/nillion';
@@ -16,12 +17,10 @@ export const storeDescriptor = async (
 
     for (let i = 0; i < descriptor.length; i++) {
       secretsToStore.push({
-        name: `given-${String(i)}`,
+        name: `actual-${String(i)}`,
         value: String(descriptor[i] === 0 ? 1 : descriptor[i]),
       });
     }
-
-    console.log('Storing secrets:', secretsToStore);
 
     for (const secret of secretsToStore) {
       const newSecret = nillion.Secret.new_integer(secret.value.toString());
@@ -29,7 +28,6 @@ export const storeDescriptor = async (
     }
 
     const userID = nillionClient.user_id;
-    console.log('User ID:', userID);
 
     const programBindings = new nillion.ProgramBindings(programID);
     const partyID = nillionClient.party_id;
@@ -41,8 +39,6 @@ export const storeDescriptor = async (
       [userID]: [programID],
     };
 
-    console.log('Compute Permissions:', computePermissions);
-
     permissions.add_compute_permissions(computePermissions);
 
     const storeID = await nillionClient.store_secrets(
@@ -51,7 +47,6 @@ export const storeDescriptor = async (
       programBindings,
       permissions
     );
-    console.log('Stored Descriptor:', storeID);
     return storeID;
   } catch (error) {
     console.log(error);

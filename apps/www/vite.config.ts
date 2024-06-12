@@ -1,12 +1,10 @@
-import wasm from 'vite-plugin-wasm';
-import topLevelAwait from 'vite-plugin-top-level-await';
-import { defineConfig, type ViteDevServer } from 'vite';
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
-
-import dotenv from 'dotenv';
-
 import react from '@vitejs/plugin-react';
+import dotenv from 'dotenv';
 import path from 'node:path';
+import { type ViteDevServer, defineConfig } from 'vite';
+import topLevelAwait from 'vite-plugin-top-level-await';
+import wasm from 'vite-plugin-wasm';
 
 dotenv.config({ path: '.env.local' });
 

@@ -1,23 +1,32 @@
-'use client';
-
 import React, { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Webcam from 'react-webcam';
 
-import { useBiometricAuth } from '~/lib/hooks';
-import { useCreateVaultStore } from '~/lib/stores';
+import {
+  useBiometricAuth,
+  useNillion,
+  useOrbitDB,
+  useSession,
+} from '~/lib/hooks';
+import { errorHandler } from '~/lib/utils';
 
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 import { Button } from '~/components/ui/button';
 
+import type { StepComponentProps } from './login-form';
+
 import { ArrowLeftIcon, ArrowRightIcon, ScanFace } from 'lucide-react';
 
-export const BiometricDetails = () => {
-  const { goToNextStep, goToPreviousStep, descriptors, setDescriptors } =
-    useCreateVaultStore();
-  const { getDescriptors } = useBiometricAuth();
+export const BiometricAuthStep = ({ actions }: StepComponentProps) => {
   const webcamRef = useRef<Webcam>(null);
+
+  const { storeID, getDescriptors, setStoreID } = useBiometricAuth();
+  const { nillion, client, storeDescriptor } = useNillion();
+  const { dbAddress } = useOrbitDB();
+  const navigate = useNavigate();
+  const { saveSession, isValidSession } = useSession();
 
   const [isScanning, setIsScanning] = useState<boolean>(false);
 
@@ -27,13 +36,38 @@ export const BiometricDetails = () => {
       if (!screenshot) {
         throw new Error('Failed to Capture Face');
       }
-      const res = await getDescriptors(screenshot);
-      console.log(res);
-      setDescriptors(res);
-      setIsScanning(false);
-      return descriptors;
+      if (!nillion || !client) {
+        throw new Error('Nillion not initialized');
+      }
+      const descriptors = await getDescriptors(screenshot);
+      const expires = Date.now() + 24 * 60 * 60 * 1000;
+      if (storeID) {
+        // TODO: Nillion Program compute
+        const score = 100;
+      } else {
+        // store descriptors
+        const id = await storeDescriptor(nillion, client, descriptors);
+        setStoreID(id);
+        await saveSession({
+          userId: client.user_id,
+          storeId: id,
+          score: 0,
+          expires,
+        });
+      }
     },
   });
+
+  const onNext = async () => {
+    try {
+      const isValid = await isValidSession();
+      if (!isValid) {
+        throw new Error('Session Invalid, Please Login Again');
+      }
+    } catch (error) {
+      toast.error(errorHandler(error));
+    }
+  };
 
   return (
     <div className='flex flex-col gap-4'>
@@ -58,15 +92,7 @@ export const BiometricDetails = () => {
       {isScanning ? (
         <Button
           className='mx-auto my-3 w-full max-w-[10rem] bg-[#4D7CFE]'
-          onClick={async () => {
-            const id = toast.loading('Scanning Face...');
-            try {
-              await mutateAsync();
-              toast.success('Face Captured Successfully', { id });
-            } catch (error) {
-              toast.error('Failed to Capture Face', { id });
-            }
-          }}
+          onClick={async () => await mutateAsync()}
         >
           Capture Face
         </Button>
@@ -79,15 +105,17 @@ export const BiometricDetails = () => {
         </Button>
       )}
       <div className='flex w-full flex-row items-center gap-4'>
-        <Button className='w-full' variant='outline' onClick={goToPreviousStep}>
+        <Button
+          className='w-full'
+          variant='outline'
+          onClick={() => {
+            actions.goToPrevStep();
+          }}
+        >
           <ArrowLeftIcon className='mr-2 h-4 w-4' />
           Back
         </Button>
-        <Button
-          className='w-full'
-          disabled={!descriptors}
-          onClick={goToNextStep}
-        >
+        <Button className='w-full' onClick={onNext}>
           Next
           <ArrowRightIcon className='ml-2 h-4 w-4' />
         </Button>

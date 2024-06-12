@@ -1,11 +1,10 @@
 'use client';
 
 import type * as n from '@nillion/nillion-client-js-browser';
-
 import { toast } from 'sonner';
 import { create } from 'zustand';
 
-import { getNillionClient } from '../nillion';
+import { getNillionClient, storeDescriptor } from '../nillion';
 import { errorHandler } from '../utils';
 import { useSnaps } from './use-snaps';
 
@@ -70,5 +69,12 @@ export const useNillion = () => {
       toast.error(message);
     }
   };
-  return { userKey, isConnected, client, nillion, connectToNillion };
+  return {
+    userKey,
+    isConnected,
+    client,
+    nillion,
+    connectToNillion,
+    storeDescriptor,
+  };
 };

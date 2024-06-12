@@ -10,13 +10,7 @@ import {
   CarouselItem,
 } from '~/components/ui/carousel';
 
-import {
-  BiometricDetails,
-  Box,
-  ConnectAccount,
-  FinalizeStep,
-  SelectPeers,
-} from './_components';
+import { Box, ConnectAccount, FinalizeStep, SelectPeers } from './_components';
 
 export const CreatePage = () => {
   const { setApi } = useCreateVaultStore();
@@ -28,9 +22,6 @@ export const CreatePage = () => {
           <CarouselContent>
             <CarouselItem key={CreateVaultSteps.ConnectAccount}>
               <ConnectAccount />
-            </CarouselItem>
-            <CarouselItem key={CreateVaultSteps.CreateBiometricScan}>
-              <BiometricDetails />
             </CarouselItem>
             <CarouselItem key={CreateVaultSteps.SelectPeers}>
               <SelectPeers />

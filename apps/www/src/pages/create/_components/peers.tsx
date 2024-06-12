@@ -134,7 +134,7 @@ export const columns: ColumnDef<PeerInfo>[] = [
 export const SelectPeers = () => {
   'use no memo';
 
-  const { discoveredPeers } = useLibp2p();
+  const { discoveredPeers, node } = useLibp2p();
   const { goToNextStep, goToPreviousStep, setPeers } = useCreateVaultStore();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -171,6 +171,12 @@ export const SelectPeers = () => {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know it's not null
         (index) => discoveredPeers[index]!
       );
+      if (node) {
+        selectedPeers.push({
+          id: node.peerId,
+          multiaddrs: node.getMultiaddrs(),
+        });
+      }
       setPeers(selectedPeers);
       setRowSelection(value);
     },
@@ -188,7 +194,7 @@ export const SelectPeers = () => {
     <div className='flex h-full flex-col justify-between'>
       <div className='flex flex-col'>
         <div className='mx-auto pt-4 text-center text-xl font-semibold text-neutral-700'>
-          Select Peers for Threshold Configuration
+          Select Peers for Vault
         </div>
 
         <div className='flex items-center py-4'>

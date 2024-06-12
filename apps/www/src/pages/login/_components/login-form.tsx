@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 
-import NillionBG from '../../../../public/nillion-bg.png';
+import { useNillion } from '~/lib/hooks';
+
 import { useStep } from 'usehooks-ts';
 import { ConnectNillion } from '~/components';
 
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 
+import NillionBG from '../../../../public/nillion-bg.png';
 import { BiometricAuthStep } from './biometric-auth';
 
 import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-react';
@@ -40,6 +42,7 @@ export interface StepComponentProps {
 }
 
 const ConnectAccountStep = ({ actions }: StepComponentProps) => {
+  const { userKey } = useNillion();
   return (
     <div className='flex flex-col gap-2'>
       <div className='flex flex-col gap-4'>
@@ -56,7 +59,7 @@ const ConnectAccountStep = ({ actions }: StepComponentProps) => {
         <ConnectNillion />
       </div>
 
-      <Button onClick={() => actions.goToNextStep()}>
+      <Button disabled={!userKey} onClick={() => actions.goToNextStep()}>
         Next
         <ArrowRightIcon className='ml-2 h-4 w-4' />
       </Button>

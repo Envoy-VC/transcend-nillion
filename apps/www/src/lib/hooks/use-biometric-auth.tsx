@@ -2,20 +2,27 @@ import { useEffect, useState } from 'react';
 
 import * as faceApi from 'face-api.js';
 import { useLocalStorage } from 'usehooks-ts';
+import { create } from 'zustand';
+
+interface BiometricAuthStore {
+  loaded: boolean;
+  setLoaded: (loaded: boolean) => void;
+}
+
+const useBiometricStore = create<BiometricAuthStore>((set) => ({
+  loaded: false,
+  setLoaded: (loaded: boolean) => set({ loaded }),
+}));
 
 export const useBiometricAuth = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [loaded, setLoaded] = useState<boolean>(false);
+  const { loaded, setLoaded } = useBiometricStore();
 
-  const [descriptor, setDescriptor] = useLocalStorage<string>(
-    'descriptor',
-    []
-  );
+  const [storeID, setStoreID] = useLocalStorage<string | null>('storeID', null);
 
   const loadModels = async () => {
+    if (loaded) return;
     try {
       console.log('Loading models...');
-      setIsLoading(true);
       await faceApi.nets.ssdMobilenetv1.loadFromUri('/models/ssd_mobilenetv1');
       await faceApi.nets.tinyFaceDetector.loadFromUri(
         '/models/tiny_face_detector'
@@ -31,10 +38,9 @@ export const useBiometricAuth = () => {
       );
 
       setLoaded(true);
-      setIsLoading(false);
       console.log('Models loaded');
     } catch (error) {
-      setIsLoading(false);
+      console.error('Failed to load models', error);
     }
   };
 
@@ -60,10 +66,9 @@ export const useBiometricAuth = () => {
   };
 
   return {
-    isModelsLoading: isLoading,
     modelsLoaded: loaded,
     getDescriptors,
-    descriptor,
-    setDescriptor,
+    storeID,
+    setStoreID,
   };
 };
