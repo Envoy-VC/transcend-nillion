@@ -1,7 +1,11 @@
 import React from 'react';
 import { type FieldErrors, useFieldArray, useForm } from 'react-hook-form';
 
+import { useNillion, useOrbitDB } from '~/lib/hooks';
+import { errorHandler, peerIdToUserID } from '~/lib/utils';
+
 import { zodResolver } from '@hookform/resolvers/zod';
+import { peerIdFromBytes } from '@libp2p/peer-id';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -27,7 +31,8 @@ import { Plus, Trash2 } from 'lucide-react';
 /* eslint-disable @typescript-eslint/restrict-template-expressions -- form field number as control register */
 
 export const NewSecretForm = () => {
-  'use no memo';
+  const { storeVaultSecrets } = useNillion();
+  const { getDBDetails, addEntry } = useOrbitDB();
   const form = useForm<FormType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -41,8 +46,27 @@ export const NewSecretForm = () => {
     },
   });
 
-  const onSubmit = (values: FormType) => {
+  const onSubmit = async (values: FormType) => {
     console.log(values);
+    const id = toast.loading('Storing secrets...');
+    try {
+      const { meta } = await getDBDetails();
+      console.log('Database Metadata: ', meta);
+      const peers = meta.peers.map((peer) => {
+        const peerID = peerIdFromBytes(Uint8Array.from(peer));
+        const userID = peerIdToUserID(peerID);
+        return userID;
+      });
+      const storeID = await storeVaultSecrets(values, peers);
+      console.log('Store ID: ', storeID);
+      const names = values.secrets.map((s) => s.name);
+      console.log('Names: ', names);
+      const hash = await addEntry(values.path, names, storeID);
+      console.log('Hash: ', hash);
+      toast.success('Secrets stored successfully.', { id });
+    } catch (error) {
+      toast.error(errorHandler(error), { id });
+    }
   };
 
   const onError = (errors: FieldErrors<FormType>) => {
@@ -215,4 +239,4 @@ const formSchema = z
     }
   );
 
-type FormType = z.infer<typeof formSchema>;
+export type FormType = z.infer<typeof formSchema>;

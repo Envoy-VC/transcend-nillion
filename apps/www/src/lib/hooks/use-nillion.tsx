@@ -3,8 +3,14 @@
 import type * as n from '@nillion/nillion-client-js-browser';
 import { toast } from 'sonner';
 import { create } from 'zustand';
+import { type FormType } from '~/pages/dashboard/engine/new/_components';
 
-import { getNillionClient, storeDescriptor ,compute} from '../nillion';
+import {
+  compute,
+  getNillionClient,
+  storeDescriptor,
+  storeSecrets,
+} from '../nillion';
 import { errorHandler } from '../utils';
 import { useSnaps } from './use-snaps';
 
@@ -69,6 +75,15 @@ export const useNillion = () => {
       toast.error(message);
     }
   };
+
+  const storeVaultSecrets = async (data: FormType, peers: string[]) => {
+    if (!nillion || !client) {
+      throw new Error('Nillion is not Initialized');
+    }
+    const storeID = await storeSecrets(nillion, client, data.secrets, peers);
+    return storeID;
+  };
+
   return {
     userKey,
     isConnected,
@@ -77,5 +92,6 @@ export const useNillion = () => {
     connectToNillion,
     storeDescriptor,
     compute,
+    storeVaultSecrets,
   };
 };

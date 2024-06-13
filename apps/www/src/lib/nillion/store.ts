@@ -48,3 +48,46 @@ export const storeDescriptor = async (
   );
   return storeID;
 };
+
+export const storeSecrets = async (
+  nillion: typeof n,
+  nillionClient: n.NillionClient,
+  data: { name: string; value: string | number; type: 'string' | 'number' }[],
+  peers: string[]
+) => {
+  const secrets = new nillion.Secrets();
+  console.log(data);
+
+  data.forEach((secret) => {
+    if (secret.type === 'string') {
+      const byteArraySecret = new TextEncoder().encode(String(secret.value));
+      const newSecret = nillion.Secret.new_blob(byteArraySecret);
+      secrets.insert(secret.name, newSecret);
+    } else {
+      const newSecret = nillion.Secret.new_integer(secret.value.toString());
+      secrets.insert(secret.name, newSecret);
+    }
+  });
+
+  console.log(secrets.toString());
+
+  const userID = nillionClient.user_id;
+  const permissions = nillion.Permissions.default_for_user(userID);
+
+  const users = peers
+    .map((peer) => (peer.toLowerCase() !== userID.toLowerCase() ? peer : null))
+    .filter((peer) => peer !== null);
+  console.log(users);
+  permissions.add_retrieve_permissions(users);
+  permissions.add_delete_permissions(users);
+  permissions.add_update_permissions(users);
+
+  const storeID = await nillionClient.store_secrets(
+    nillionConfig.cluster_id,
+    secrets,
+    // @ts-expect-error -- null allowed
+    null,
+    permissions
+  );
+  return storeID;
+};

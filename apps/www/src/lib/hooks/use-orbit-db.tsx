@@ -70,11 +70,11 @@ export const useOrbitDB = () => {
     void init();
   }, [orbitDB, node, setOrbitDB, dbAddress, setIPFS, ipfs]);
 
-  const createDatabase = async (peers: string[]) => {
+  const createDatabase = async (peers: Uint8Array[]) => {
     if (!orbitDB) {
       throw new Error('OrbitDB not initialized');
     }
-    const meta = { peers };
+    const meta = { peers: peers.map((v) => Array.from(v)) };
     const db = await orbitDB.open('vault-db', { meta, type: 'documents' });
     setDBAddress(db.address as string);
     const DB = await orbitDB.open(dbAddress);
@@ -100,11 +100,29 @@ export const useOrbitDB = () => {
 
     return value as {
       accessController: string;
-      meta: { peers: string[] };
+      meta: { peers: number[][] };
       name: string;
       type: string;
     };
   };
 
-  return { orbitDB, createDatabase, dbAddress, db, setDBAddress, getDBDetails };
+  const addEntry = async (path: string, names: string[], storeID: string) => {
+    const data = {
+      _id: path,
+      names,
+      storeID,
+    };
+    const hash = (await db.put(data)) as string;
+    return hash;
+  };
+
+  return {
+    orbitDB,
+    createDatabase,
+    dbAddress,
+    db,
+    setDBAddress,
+    getDBDetails,
+    addEntry,
+  };
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useLibp2p, useOrbitDB } from '~/lib/hooks';
@@ -18,7 +18,7 @@ export const FinalizeStep = () => {
   const { createDatabase } = useOrbitDB();
   const navigate = useNavigate();
 
-  const [dbAddress, setDbAddress] = React.useState<string | null>(null);
+  const [dbAddress, setDbAddress] = useState<string | null>(null);
 
   const onCreate = async () => {
     const id = toast.loading('Creating vault...');
@@ -26,7 +26,10 @@ export const FinalizeStep = () => {
       if (!node) {
         throw new Error('Nillion not initialized');
       }
-      const vaultPeers = peers.map((p) => p.id.toString());
+      const vaultPeers = peers.map((p) => {
+        return p.id.toBytes();
+      });
+
       const dbAddress = await createDatabase(vaultPeers);
       setDbAddress(dbAddress);
       toast.success('Vault created successfully', { id });
@@ -61,18 +64,18 @@ export const FinalizeStep = () => {
             </div>
           </div>
         </div>
-        {dbAddress && (
+        {dbAddress ? (
           <div className='flex flex-col gap-2'>
             <div className='text-lg font-semibold text-neutral-600'>
               Vault Address
             </div>
             <div className='flex flex-col gap-2'>
               <div className='text-sm font-semibold text-neutral-700'>
-                <TextCopy text={dbAddress} enableTruncate={false} />
+                <TextCopy enableTruncate={false} text={dbAddress} />
               </div>
             </div>
           </div>
-        )}
+        ) : null}
       </div>
 
       <div className='flex flex-row gap-2'>
