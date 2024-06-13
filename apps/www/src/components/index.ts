@@ -3,3 +3,4 @@ export * from './layout';
 export * from './connect-nillion';
 export * from './card';
 export * from './encode';
+export * from './decode';

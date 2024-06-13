@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Encode } from '~/components';
+import { Decode, Encode } from '~/components';
 
 import { withDashboardLayout } from '../_components';
 
@@ -12,6 +12,7 @@ export const ToolsPage = () => {
       </div>
       <div className='mt-4 flex flex-col gap-4'>
         <Encode />
+        <Decode />
       </div>
     </div>
   );
