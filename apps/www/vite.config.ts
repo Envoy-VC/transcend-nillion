@@ -30,6 +30,7 @@ export default defineConfig({
   },
   plugins: [react(), wasm(), topLevelAwait(), wasmContentTypePlugin()],
   optimizeDeps: {
+    include: ['shiki'],
     exclude: ['@nillion/nillion-client-js-browser'],
     esbuildOptions: {
       define: {

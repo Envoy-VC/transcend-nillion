@@ -351,6 +351,9 @@ importers:
       '@libp2p/websockets':
         specifier: ^8.0.24
         version: 8.0.24
+      '@monaco-editor/react':
+        specifier: ^4.6.0
+        version: 4.6.0(monaco-editor@0.49.0)(react-dom@18.2.0)(react@18.2.0)
       '@multiformats/multiaddr':
         specifier: ^12.2.3
         version: 12.3.0
@@ -396,6 +399,9 @@ importers:
       '@remix-run/node':
         specifier: ^2.9.2
         version: 2.9.2(typescript@5.4.5)
+      '@shikijs/monaco':
+        specifier: ^1.6.4
+        version: 1.6.4
       '@tanstack/query-core':
         specifier: ^5.40.0
         version: 5.40.0
@@ -456,6 +462,12 @@ importers:
       lucide-react:
         specifier: ^0.381.0
         version: 0.381.0(react@18.2.0)
+      monaco-editor:
+        specifier: ^0.49.0
+        version: 0.49.0
+      monaco-editor-core:
+        specifier: ^0.49.0
+        version: 0.49.0
       multiformats:
         specifier: ^13.1.1
         version: 13.1.1
@@ -580,6 +592,9 @@ importers:
       prettier-plugin-tailwindcss:
         specifier: ^0.6.0
         version: 0.6.1(@trivago/prettier-plugin-sort-imports@4.3.0)(prettier@3.3.1)
+      shiki:
+        specifier: ^1.6.4
+        version: 1.6.4
       tailwindcss:
         specifier: ^3.4.3
         version: 3.4.4
@@ -3744,6 +3759,28 @@ packages:
     resolution: {integrity: sha512-9b8mPpKrfeGRuhFH5iO1iwCLeIIsV6+H1sRfxbkoGXIyQE2BTsPd9zqSqQJ+pv5sJ/hT5M1zvOFL02MnEezFug==}
     dev: true
 
+  /@monaco-editor/loader@1.4.0(monaco-editor@0.49.0):
+    resolution: {integrity: sha512-00ioBig0x642hytVspPl7DbQyaSWRaolYie/UFNjoTdvoKPzo6xrXLhTk9ixgIKcLH5b5vDOjVNiGyY+uDCUlg==}
+    peerDependencies:
+      monaco-editor: '>= 0.21.0 < 1'
+    dependencies:
+      monaco-editor: 0.49.0
+      state-local: 1.0.7
+    dev: false
+
+  /@monaco-editor/react@4.6.0(monaco-editor@0.49.0)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-RFkU9/i7cN2bsq/iTkurMWOEErmYcY6JiQI3Jn+WeR/FGISH8JbHERjpS9oRuSOPvDMJI0Z8nJeKkbOs9sBYQw==}
+    peerDependencies:
+      monaco-editor: '>= 0.25.0 < 1'
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      '@monaco-editor/loader': 1.4.0(monaco-editor@0.49.0)
+      monaco-editor: 0.49.0
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
   /@motionone/animation@10.18.0:
     resolution: {integrity: sha512-9z2p5GFGCm0gBsZbi8rVMOAJCtw1WqBTIPw3ozk06gDvZInBPIsQcHgYogEJ4yuHJ+akuW8g1SEIOpTOvYs8hw==}
     dependencies:
@@ -5607,6 +5644,15 @@ packages:
     dependencies:
       '@noble/hashes': 1.3.3
       '@scure/base': 1.1.6
+    dev: false
+
+  /@shikijs/core@1.6.4:
+    resolution: {integrity: sha512-WTU9rzZae1p2v6LOxMf6LhtmZOkIHYYW160IuahUyJy7YXPPjyWZLR1ag+SgD22ZMxZtz1gfU6Tccc8t0Il/XA==}
+
+  /@shikijs/monaco@1.6.4:
+    resolution: {integrity: sha512-CS3qoVULEcrVb4hMJwb1nopUB5/FlSIhBqmtre849OuSUva6Vc7355qjMYGlnJuXY3yz/f68+lTwebsQHCFvxg==}
+    dependencies:
+      '@shikijs/core': 1.6.4
     dev: false
 
   /@sideway/address@4.1.5:
@@ -12229,6 +12275,14 @@ packages:
     engines: {node: '>=10'}
     dev: false
 
+  /monaco-editor-core@0.49.0:
+    resolution: {integrity: sha512-MANZcpLnpcM5qceEMsdwndvyB9rlGu+Sd8mVLd6y4VpSZCQenpoUAYk0K+UAPtcnCOYhgIsR/ZS9PxzMnCFkYw==}
+    dev: false
+
+  /monaco-editor@0.49.0:
+    resolution: {integrity: sha512-2I8/T3X/hLxB2oPHgqcNYUVdA/ZEFShT7IAujifIPMfKkNbLOqY8XCoyHCXrsdjb36dW9MwoTwBCFpXKMwNwaQ==}
+    dev: false
+
   /mortice@3.0.4:
     resolution: {integrity: sha512-MUHRCAztSl4v/dAmK8vbYi5u1n9NZtQu4H3FsqS7qgMFQIAFw9lTpHiErd9kJpapqmvEdD1L3dUmiikifAvLsQ==}
     dependencies:
@@ -14164,6 +14218,12 @@ packages:
     resolution: {integrity: sha512-6j1W9l1iAs/4xYBI1SYOVZyFcCis9b4KCLQ8fgAGG07QvzaRLVVRQvAy85yNmmZSjYjg4MWh4gNvlPujU/5LpA==}
     dev: false
 
+  /shiki@1.6.4:
+    resolution: {integrity: sha512-X88chM7w8jnadoZtjPTi5ahCJx9pc9f8GfEkZAEYUTlcUZIEw2D/RY86HI/LkkE7Nj8TQWkiBfaFTJ3VJT6ESg==}
+    dependencies:
+      '@shikijs/core': 1.6.4
+    dev: true
+
   /side-channel@1.0.6:
     resolution: {integrity: sha512-fDW/EZ6Q9RiO8eFG8Hj+7u/oW+XrPTIChwCOM2+th2A6OblDtYYIpve9m+KvI9Z4C9qSEXlaGR6bTEYHReuglA==}
     engines: {node: '>= 0.4'}
@@ -14364,6 +14424,10 @@ packages:
     engines: {node: '>=6'}
     dependencies:
       type-fest: 0.7.1
+    dev: false
+
+  /state-local@1.0.7:
+    resolution: {integrity: sha512-HTEHMNieakEnoe33shBYcZ7NX83ACUjCu8c40iOGEZsngj9zRnkqS9j1pqQPXwobB0ZcVTk27REb7COQ0UR59w==}
     dev: false
 
   /statuses@1.5.0:

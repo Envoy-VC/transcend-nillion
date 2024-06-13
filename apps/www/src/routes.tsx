@@ -7,6 +7,7 @@ import { DashboardPage } from './pages/dashboard';
 import { SecretsEnginePage } from './pages/dashboard/engine';
 import { NewSecretPage } from './pages/dashboard/engine/new';
 import { SecretsPage } from './pages/dashboard/engine/secret';
+import { ToolsPage } from './pages/dashboard/tools';
 import { LoginPage } from './pages/login';
 
 const withLayout = (Component: React.JSX.Element) => {
@@ -33,6 +34,10 @@ export const routes: RouteObject[] = [
   {
     path: '/dashboard/engine',
     element: withLayout(<SecretsEnginePage />),
+  },
+  {
+    path: '/dashboard/tools',
+    element: withLayout(<ToolsPage />),
   },
   {
     path: '/dashboard/engine/new',
