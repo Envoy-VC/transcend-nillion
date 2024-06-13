@@ -56,7 +56,6 @@ export const storeSecrets = async (
   peers: string[]
 ) => {
   const secrets = new nillion.Secrets();
-  console.log(data);
 
   data.forEach((secret) => {
     if (secret.type === 'string') {
@@ -69,15 +68,13 @@ export const storeSecrets = async (
     }
   });
 
-  console.log(secrets.toString());
-
   const userID = nillionClient.user_id;
   const permissions = nillion.Permissions.default_for_user(userID);
 
   const users = peers
     .map((peer) => (peer.toLowerCase() !== userID.toLowerCase() ? peer : null))
-    .filter((peer) => peer !== null);
-  console.log(users);
+    .filter((peer) => peer !== null) as string[];
+
   permissions.add_retrieve_permissions(users);
   permissions.add_delete_permissions(users);
   permissions.add_update_permissions(users);
