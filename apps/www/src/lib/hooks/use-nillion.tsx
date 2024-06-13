@@ -8,6 +8,7 @@ import { type FormType } from '~/pages/dashboard/engine/new/_components';
 import {
   compute,
   getNillionClient,
+  retrieveSecret,
   storeDescriptor,
   storeSecrets,
 } from '../nillion';
@@ -93,5 +94,6 @@ export const useNillion = () => {
     storeDescriptor,
     compute,
     storeVaultSecrets,
+    retrieveSecret,
   };
 };

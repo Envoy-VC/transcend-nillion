@@ -5,7 +5,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment -- no types */
 
 /* eslint-disable @typescript-eslint/no-unsafe-call -- no types */
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import * as dagCbor from '@ipld/dag-cbor';
 // @ts-expect-error - no types
@@ -25,21 +25,37 @@ import { useLibp2p } from './use-libp2p';
 interface OrbitDBStore {
   orbitDB: any;
   ipfs: HeliaLibp2p<NodeType> | null;
+  db: any;
+  initialized: boolean;
   setOrbitDB: (orbitDB: any) => void;
   setIPFS: (ipfs: HeliaLibp2p<NodeType>) => void;
+  setDB: (db: any) => void;
+  setInitialized: (initialized: boolean) => void;
 }
 
 export const useOrbitDBStore = create<OrbitDBStore>((set) => ({
   orbitDB: null,
   ipfs: null,
+  db: null,
+  initialized: false,
   setOrbitDB: (orbitDB: any) => set({ orbitDB }),
+  setDB: (db: any) => set({ db }),
   setIPFS: (ipfs: HeliaLibp2p<NodeType>) => set({ ipfs }),
+  setInitialized: (initialized: boolean) => set({ initialized }),
 }));
 
 export const useOrbitDB = () => {
   const { node } = useLibp2p();
-  const { orbitDB, ipfs, setOrbitDB, setIPFS } = useOrbitDBStore();
-  const [db, setDB] = useState<any>(null);
+  const {
+    orbitDB,
+    ipfs,
+    initialized,
+    db,
+    setOrbitDB,
+    setIPFS,
+    setInitialized,
+    setDB,
+  } = useOrbitDBStore();
 
   const [dbAddress, setDBAddress] = useLocalStorage<string | null>(
     'dbAddress',
@@ -48,27 +64,47 @@ export const useOrbitDB = () => {
 
   useEffect(() => {
     const init = async () => {
-      if (node && !orbitDB && !ipfs) {
-        const blockstore = new IDBBlockstore('orbitdb');
-        await blockstore.open();
-        const ipfs = await createHelia({
-          libp2p: node,
-          blockstore,
-        });
-        setIPFS(ipfs);
-        const orbitdb = await createOrbitDB({
-          ipfs,
-          id: node.peerId.toString(),
-        });
-        setOrbitDB(orbitdb);
-        if (!dbAddress) return;
-        const DB = await orbitdb.open(dbAddress);
-        setDB(DB);
+      if (!node) return;
+      const blockstore = new IDBBlockstore('orbitdb');
+      await blockstore.open();
+      const ipfs = await createHelia({
+        libp2p: node,
+        blockstore,
+      });
+      const orbitdb = await createOrbitDB({
+        ipfs,
+        id: node.peerId.toString(),
+      });
+      if (!dbAddress) return;
+      const DB = await orbitdb.open(dbAddress);
+
+      return {
+        orbitdb,
+        ipfs,
+        db: DB,
+      };
+    };
+    const initialize = async () => {
+      if (node && !initialized) {
+        const res = await init();
+        if (!res) return;
+        setOrbitDB(res.orbitdb);
+        setIPFS(res.ipfs);
+        setDB(res.db);
+        setInitialized(true);
       }
     };
 
-    void init();
-  }, [orbitDB, node, setOrbitDB, dbAddress, setIPFS, ipfs]);
+    void initialize();
+  }, [
+    node,
+    dbAddress,
+    initialized,
+    setOrbitDB,
+    setIPFS,
+    setInitialized,
+    setDB,
+  ]);
 
   const createDatabase = async (peers: Uint8Array[]) => {
     if (!orbitDB) {
@@ -107,6 +143,9 @@ export const useOrbitDB = () => {
   };
 
   const addEntry = async (path: string, names: string[], storeID: string) => {
+    if (!db) {
+      throw new Error('DB not initialized');
+    }
     const data = {
       _id: path,
       names,
@@ -131,6 +170,21 @@ export const useOrbitDB = () => {
     }[];
   };
 
+  const getOne = async (key: string) => {
+    if (!db) {
+      throw new Error('DB not initialized');
+    }
+    return (await db.get(key)) as {
+      hash: string;
+      key: string;
+      value: {
+        names: string[];
+        storeID: string;
+        _id: string;
+      };
+    };
+  };
+
   return {
     orbitDB,
     createDatabase,
@@ -140,5 +194,6 @@ export const useOrbitDB = () => {
     getDBDetails,
     addEntry,
     getAll,
+    getOne,
   };
 };

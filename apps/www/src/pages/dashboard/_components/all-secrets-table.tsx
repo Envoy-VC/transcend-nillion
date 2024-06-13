@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
-import { useOrbitDB } from '~/lib/hooks';
+import { useNillion, useOrbitDB } from '~/lib/hooks';
 
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -69,7 +69,9 @@ export const columns: ColumnDef<Secret>[] = [
       const secret = row.original;
       return (
         <Button asChild className='h-8 w-8 p-0' variant='ghost'>
-          <Link to={`/dashboard/engine/secret/${secret.path}`}>
+          <Link
+            to={`/dashboard/engine/secret/${secret.path}?storeID=${secret.storeId}`}
+          >
             <ExternalLink className='h-4 w-4' />
           </Link>
         </Button>
@@ -79,8 +81,8 @@ export const columns: ColumnDef<Secret>[] = [
 ];
 
 export const AllSecretsTable = () => {
-  'use no memo';
   const { getAll } = useOrbitDB();
+  const { client } = useNillion();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -91,11 +93,10 @@ export const AllSecretsTable = () => {
 
   const { data } = useQuery({
     queryKey: ['secrets'],
+    enabled: Boolean(client),
     initialData: [],
     queryFn: async () => {
-      console.log('run');
       const res = await getAll();
-
       const secrets: Secret[] = [];
 
       res.forEach((v) => {

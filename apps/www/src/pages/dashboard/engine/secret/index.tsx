@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion -- no null */
 import React from 'react';
-
-import { SecretsTable, withDashboardLayout } from '../../_components';
+import { useParams } from 'react-router-dom';
 
 import {
   Breadcrumb,
@@ -10,7 +10,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '~/components/ui/breadcrumb';
-import { useParams } from 'react-router-dom';
+
+import { SecretsTable, withDashboardLayout } from '../../_components';
 
 export const SecretsPage = () => {
   const { id } = useParams();
@@ -33,8 +34,7 @@ export const SecretsPage = () => {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-
-      <SecretsTable />
+      <SecretsTable id={id!} />
     </div>
   );
 };

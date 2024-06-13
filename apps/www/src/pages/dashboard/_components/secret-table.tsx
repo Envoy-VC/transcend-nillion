@@ -1,5 +1,11 @@
+/* eslint-disable react-hooks/rules-of-hooks -- safe */
 import * as React from 'react';
+import { useSearchParams } from 'react-router-dom';
 
+import { useNillion, useOrbitDB } from '~/lib/hooks';
+import { errorHandler } from '~/lib/utils';
+
+import { useQuery } from '@tanstack/react-query';
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -12,6 +18,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { toast } from 'sonner';
 
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
@@ -25,19 +32,6 @@ import {
 } from '~/components/ui/table';
 
 import { ArrowUpDown, Eye, EyeOff } from 'lucide-react';
-
-const data: Secret[] = [
-  {
-    name: 'NEXT_PUBIC_KEY',
-    value: null,
-    hidden: true,
-  },
-  {
-    name: 'NEXT_SECRET_STRIPE_KEY',
-    value: null,
-    hidden: true,
-  },
-];
 
 interface Secret {
   name: string;
@@ -66,15 +60,41 @@ const columns: ColumnDef<Secret>[] = [
     header: 'Secret Value',
     cell: ({ row }) => {
       const secret = row.original;
+      const { client, retrieveSecret } = useNillion();
+      const [searchParams] = useSearchParams();
+      const [value, setValue] = React.useState<string | null>(null);
+
+      const onReveal = async () => {
+        try {
+          if (!value) {
+            const type = typeof secret.value === 'string' ? 'string' : 'number';
+            const storeID = searchParams.get('storeID');
+            if (!storeID) {
+              throw new Error('Store ID not found.');
+            }
+            if (!client) {
+              throw new Error('Nillion client not found.');
+            }
+            const retrieved = await retrieveSecret(
+              client,
+              storeID,
+              secret.name,
+              type
+            );
+            setValue(retrieved);
+            console.log(retrieved);
+          } else {
+            setValue(null);
+          }
+        } catch (error) {
+          toast.error(errorHandler(error));
+        }
+      };
       return (
         <div className='flex w-full flex-row items-center gap-2'>
-          {secret.hidden ? (
-            <div>{'*'.repeat(24)}</div>
-          ) : (
-            <div>{secret.value}</div>
-          )}
-          <Button className='h-8 w-8 p-0' variant='ghost'>
-            {secret.hidden ? <EyeOff size={18} /> : <Eye />}
+          {!value ? <div>{'*'.repeat(24)}</div> : <div>{value}</div>}
+          <Button className='h-8 w-8 p-0' variant='ghost' onClick={onReveal}>
+            {!value ? <Eye /> : <EyeOff size={18} />}
           </Button>
         </div>
       );
@@ -82,8 +102,26 @@ const columns: ColumnDef<Secret>[] = [
   },
 ];
 
-export const SecretsTable = () => {
-  'use no memo';
+export const SecretsTable = ({ id }: { id: string }) => {
+  const { getOne } = useOrbitDB();
+  const { client } = useNillion();
+  const { data } = useQuery({
+    queryKey: ['secret', id],
+    initialData: [],
+    queryFn: async () => {
+      const res = await getOne(id);
+      const secrets: Secret[] = [];
+      res.value.names.forEach((name) => {
+        secrets.push({
+          name,
+          value: null,
+          hidden: true,
+        });
+      });
+      return secrets;
+    },
+    enabled: Boolean(client),
+  });
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
