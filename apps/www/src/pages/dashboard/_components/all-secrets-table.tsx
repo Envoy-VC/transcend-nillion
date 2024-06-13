@@ -1,7 +1,9 @@
+import * as React from 'react';
 import { Link } from 'react-router-dom';
 
-import * as React from 'react';
+import { useOrbitDB } from '~/lib/hooks';
 
+import { useQuery } from '@tanstack/react-query';
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -29,19 +31,9 @@ import {
 
 import { ArrowUpDown, ExternalLink } from 'lucide-react';
 
-const data: Secret[] = [
-  {
-    path: 'redis-env',
-    storeId: '225d367b-b2f7-4694-bbed-4482da47b21c',
-  },
-  {
-    path: 'openai-keys',
-    storeId: '06c90244-c6a0-4c16-9d8e-5e0ba3cdae7f',
-  },
-];
-
 export interface Secret {
   path: string;
+  names: string[];
   storeId: string;
 }
 
@@ -88,6 +80,7 @@ export const columns: ColumnDef<Secret>[] = [
 
 export const AllSecretsTable = () => {
   'use no memo';
+  const { getAll } = useOrbitDB();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -95,6 +88,27 @@ export const AllSecretsTable = () => {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+
+  const { data } = useQuery({
+    queryKey: ['secrets'],
+    initialData: [],
+    queryFn: async () => {
+      console.log('run');
+      const res = await getAll();
+
+      const secrets: Secret[] = [];
+
+      res.forEach((v) => {
+        secrets.push({
+          names: v.value.names,
+          path: v.key,
+          storeId: v.value.storeID,
+        });
+      });
+
+      return secrets;
+    },
+  });
 
   const table = useReactTable({
     data,

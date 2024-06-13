@@ -7,12 +7,12 @@ import { Button } from '~/components/ui/button';
 import { withDashboardLayout } from './_components';
 
 export const DashboardPage = () => {
-  const { getDBDetails } = useOrbitDB();
+  const { getAll } = useOrbitDB();
   return withDashboardLayout(
     <div>
       <Button
         onClick={async () => {
-          const res = await getDBDetails();
+          const res = await getAll();
           console.log(res);
         }}
       >

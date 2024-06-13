@@ -116,6 +116,21 @@ export const useOrbitDB = () => {
     return hash;
   };
 
+  const getAll = async () => {
+    if (!db) {
+      throw new Error('DB not initialized');
+    }
+    return (await db.all()) as {
+      hash: string;
+      key: string;
+      value: {
+        names: string[];
+        storeID: string;
+        _id: string;
+      };
+    }[];
+  };
+
   return {
     orbitDB,
     createDatabase,
@@ -124,5 +139,6 @@ export const useOrbitDB = () => {
     setDBAddress,
     getDBDetails,
     addEntry,
+    getAll,
   };
 };
