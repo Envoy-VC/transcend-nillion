@@ -72,8 +72,7 @@ export const useNillion = () => {
       setNillion(res.nillion);
       setIsConnected(true);
     } catch (error) {
-      const message = errorHandler(error);
-      toast.error(message);
+      toast.error(errorHandler(error));
     }
   };
 

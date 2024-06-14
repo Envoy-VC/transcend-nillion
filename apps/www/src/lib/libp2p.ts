@@ -50,7 +50,7 @@ export const createNode = async (peerId: PeerId): Promise<NodeType> => {
         list: [import.meta.env.VITE_BOOTSTRAP_MULTIADDRS as string],
       }),
       pubsubPeerDiscovery({
-        interval: 1000,
+        interval: 10,
       }),
     ],
     connectionGater: {
@@ -59,7 +59,6 @@ export const createNode = async (peerId: PeerId): Promise<NodeType> => {
     services: {
       pubsub: gossipsub({
         allowPublishToZeroTopicPeers: true,
-        fallbackToFloodsub: true,
       }),
       identify: identify(),
     },

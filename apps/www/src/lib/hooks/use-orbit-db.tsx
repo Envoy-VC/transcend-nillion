@@ -8,8 +8,10 @@
 import { useEffect } from 'react';
 
 import * as dagCbor from '@ipld/dag-cbor';
+import { peerIdFromBytes } from '@libp2p/peer-id';
 // @ts-expect-error - no types
-import { createOrbitDB, parseAddress } from '@orbitdb/core';
+// prettier-ignore
+import { IPFSAccessController, Identities, createOrbitDB, parseAddress } from '@orbitdb/core';
 import { IDBBlockstore } from 'blockstore-idb';
 import { type HeliaLibp2p, createHelia } from 'helia';
 import { base58btc } from 'multiformats/bases/base58';
@@ -63,8 +65,9 @@ export const useOrbitDB = () => {
   );
 
   useEffect(() => {
-    const init = async () => {
+    const initialize = async () => {
       if (!node) return;
+      if (initialized) return;
       const blockstore = new IDBBlockstore('orbitdb');
       await blockstore.open();
       const ipfs = await createHelia({
@@ -75,24 +78,14 @@ export const useOrbitDB = () => {
         ipfs,
         id: node.peerId.toString(),
       });
-      if (!dbAddress) return;
-      const DB = await orbitdb.open(dbAddress);
-
-      return {
-        orbitdb,
-        ipfs,
-        db: DB,
-      };
-    };
-    const initialize = async () => {
-      if (node && !initialized) {
-        const res = await init();
-        if (!res) return;
-        setOrbitDB(res.orbitdb);
-        setIPFS(res.ipfs);
-        setDB(res.db);
-        setInitialized(true);
+      if (dbAddress) {
+        const DB = await orbitdb.open(dbAddress);
+        setDB(DB);
       }
+
+      setOrbitDB(orbitdb);
+      setIPFS(ipfs);
+      setInitialized(true);
     };
 
     void initialize();
@@ -107,11 +100,21 @@ export const useOrbitDB = () => {
   ]);
 
   const createDatabase = async (peers: Uint8Array[]) => {
-    if (!orbitDB) {
-      throw new Error('OrbitDB not initialized');
+    const identityProvider = await Identities();
+    const ids = [];
+    for (const peer of peers) {
+      const id = await identityProvider.createIdentity({
+        id: peerIdFromBytes(peer).toString(),
+      });
+      console.log(id);
+      ids.push(id.id);
     }
     const meta = { peers: peers.map((v) => Array.from(v)) };
-    const db = await orbitDB.open('vault-db', { meta, type: 'documents' });
+    const db = await orbitDB.open('vault-db', {
+      meta,
+      type: 'documents',
+      AccessController: IPFSAccessController({ write: ids }),
+    });
     setDBAddress(db.address as string);
     const DB = await orbitDB.open(dbAddress);
     setDB(DB);

@@ -16,14 +16,11 @@ export const initializeNillionClient = (
     websockets,
     paymentsConfig
   );
-
-  console.log('Nillion Client Initialized', client);
-
   return client;
 };
 
 export const getNillionClient = async (userKey: string) => {
-  const res = await nillion.default();
+  await nillion.default();
   const nillionUserKey = nillion.UserKey.from_base58(userKey);
 
   const nodeKey = nillion.NodeKey.from_seed(crypto.randomUUID());

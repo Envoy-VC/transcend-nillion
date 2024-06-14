@@ -14,10 +14,12 @@ export async function retrieveSecret(
     secretName
   );
 
-  if (type === 'string') {
+  try {
+    const res = retrieved.to_integer();
+    return res;
+  } catch (error) {
     const byteArraySecret = retrieved.to_byte_array();
     const decodedValue = new TextDecoder('utf-8').decode(byteArraySecret);
     return decodedValue;
   }
-  return retrieved.to_integer();
 }

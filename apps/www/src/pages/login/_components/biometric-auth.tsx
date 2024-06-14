@@ -70,17 +70,15 @@ export const BiometricAuthStep = ({ actions }: StepComponentProps) => {
   });
 
   const onNext = async () => {
-    try {
-      const isValid = await isValidSession();
-      if (!isValid) {
-        throw new Error('Session Invalid, Please Login Again');
-      }
-      if (dbAddress) {
-        navigate('/dashboard');
-      }
-    } catch (error) {
-      toast.error(errorHandler(error));
+    const isValid = await isValidSession();
+    if (!isValid) {
+      toast.error('Session Invalid, Please Login Again');
     }
+    if (dbAddress) {
+      navigate('/dashboard');
+      return;
+    }
+    actions.goToNextStep();
   };
 
   return (

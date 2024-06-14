@@ -1,16 +1,14 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion -- no null */
-
 import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
 import {
+  RouterProvider,
   createBrowserRouter,
   matchRoutes,
-  RouterProvider,
 } from 'react-router-dom';
 
-import './styles/globals.css';
-
 import { routes } from './routes';
+import './styles/globals.css';
 
 void hydrate();
 
@@ -35,8 +33,8 @@ async function hydrate() {
 
   ReactDOM.hydrateRoot(
     document.getElementById('root')!,
-    <React.StrictMode>
-      <RouterProvider fallbackElement={null} router={router} />
-    </React.StrictMode>
+    // <React.StrictMode>
+    <RouterProvider fallbackElement={null} router={router} />
+    // </React.StrictMode>
   );
 }

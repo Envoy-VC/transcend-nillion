@@ -56,8 +56,12 @@ export const useSession = () => {
   };
 
   const isValidSession = async () => {
-    const session = (await sessionService.loadSession()) as UserSession;
-    return validateSession(session);
+    try {
+      const session = (await sessionService.loadSession()) as UserSession;
+      return validateSession(session);
+    } catch (error) {
+      return false;
+    }
   };
 
   return { store, getSession, saveSession, isValidSession };

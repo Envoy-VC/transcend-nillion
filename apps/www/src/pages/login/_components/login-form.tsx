@@ -65,16 +65,7 @@ const ConnectAccountStep = ({ actions }: StepComponentProps) => {
       <Button
         disabled={!userKey}
         onClick={async () => {
-          try {
-            const isValid = await isValidSession();
-            if (isValid) {
-              navigate('/dashboard');
-              return;
-            }
-            actions.goToNextStep();
-          } catch (error) {
-            actions.goToNextStep();
-          }
+          actions.goToNextStep();
         }}
       >
         Next

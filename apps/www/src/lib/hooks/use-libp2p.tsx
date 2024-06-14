@@ -102,7 +102,6 @@ export const useLibp2p = () => {
   useEffect(() => {
     const onPeerDisconnect = (e: CustomEvent<PeerId>) => {
       const peer = e.detail;
-      console.log('Disconnected: ', peer);
       const peers = connectedPeers.filter(
         (p) => p.toString() !== peer.toString()
       );
