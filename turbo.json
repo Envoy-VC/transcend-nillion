@@ -16,6 +16,10 @@
     "setup": {
       "cache": false,
       "persistent": true
+    },
+    "pre-dev": {
+      "cache": false,
+      "persistent": true
     }
   }
 }
