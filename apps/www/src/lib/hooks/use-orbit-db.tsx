@@ -113,7 +113,7 @@ export const useOrbitDB = () => {
     const db = await orbitDB.open('vault-db', {
       meta,
       type: 'documents',
-      AccessController: IPFSAccessController({ write: ids }),
+      AccessController: IPFSAccessController({ write: ['*'] }),
     });
     setDBAddress(db.address as string);
     const DB = await orbitDB.open(dbAddress);
