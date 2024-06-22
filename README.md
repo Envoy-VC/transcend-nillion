@@ -227,7 +227,7 @@ pnpm run pre-dev
 
 Copy the bootstrap node multiaddr and fill it in the `VITE_BOOTSTRAP_MULTIADDRS` in the `apps/www/.env.local` file.
 
- `VITE_NILLION_PROGRAM_ID` and other environment variables will be automatically set in the `apps/www/.env.local` file.
+`VITE_NILLION_PROGRAM_ID` and other environment variables will be automatically set in the `apps/www/.env.local` file.
 
 Then run the following command to start the application:
 
