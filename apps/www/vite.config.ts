@@ -27,6 +27,7 @@ export default defineConfig({
       'Cross-Origin-Opener-Policy': 'same-origin',
       'Cross-Origin-Embedder-Policy': 'require-corp',
     },
+    port: 3000,
   },
   plugins: [react(), wasm(), topLevelAwait(), wasmContentTypePlugin()],
   optimizeDeps: {
